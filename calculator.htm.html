@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+<title>حاسبة الادوات الصحيه | معرض الصعيدي للادوات الصحيه</title>
+
+<link rel="icon" type="image/png" href="saidi-logo.PNG">
+
+
+  <link rel="stylesheet" href="calculator-style.css">
+  <meta name="author" content="معرض الصعيدي – بشتيل إمبابة">
+</head>
+<body>
+
+  <!-- هيدر فيه اللوجو والعنوان -->
+  <div style="text-align: center; margin-bottom: 20px;">
+    <a href="https://facebook.com/saedytools" target="_blank">
+
+      <img src="saidi-logo.PNG" alt="لوجو معرض الصعيدي" style="height: 80px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.2);">
+    </a>
+    <h1>🧮 احسب فاتورتك بنفسك</h1>
+  </div>
+
+  <p style="text-align: center; color: #555;">
+    دي مجرد محاولة لمحاربة الاستغلال وجشع بعض التجار، والأسعار هنا قبل الخصم كمان  
+    بالسعر الحالي في شهر سبتمبر 2025
+  </p>
+
+  <label for="companySelect">اختار الشركة:</label>
+  <select id="companySelect">
+    <option value="">-- اختر الشركة --</option>
+    <option value="egic">إيجيك</option>
+    <option value="belissa">بيلسا ثيرم</option>
+    <option value="economy">نواكل اقتصادي</option>
+    <option value="lux">نواكل لوكس</option>
+    <option value="extras">كماليات تأسيس وتشطيب</option>
+  </select>
+
+  <div id="companyInfo" style="margin-top: 20px;"></div>
+  <div id="itemsContainer" style="margin-top: 20px;"></div>
+
+  <button onclick="calculateTotal()">احسب الإجمالي</button>
+  <p id="totalResult">الإجمالي: 0 جنيه</p>
+
+  <p style="color: green; font-weight: bold;">
+    ✔️ الأسعار قبل الخصم، وانتظر خصم خاص من معرض الصعيدي – شارع مسجد الرحمن، بشتيل إمبابة – لو قررت تشتري
+  </p>
+
+<a href="javascript:void(0)" id="whatsappLink">💬 اطلب شراء أو اسأل عن الخصم</a>
+
+
+  <p style="color: gray; margin-top: 20px;">
+    تابعنا على صفحتنا على الفيس بوك، ولو عايز أصناف إضافية، اسألنا في معرض الصعيدي بشتيل إمبابة أو ابعتلنا طلباتك على الواتساب.
+  </p>
+
+  <script src="calculator-script.js"></script>
+
+  <!-- بصمة ملكية -->
+  <footer style="text-align: center; color: #888; font-size: 14px; margin-top: 40px;">
+    🔒 هذه الحاسبة مقدمة حصريًا من <strong>معرض الصعيدي</strong> – بشتيل إمبابة  
+    ولا يجوز إعادة نشرها أو استخدامها بدون إذن رسمي.
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+/* إعدادات أساسية */
+body {
+  font-family: 'Cairo', sans-serif;
+  background: #fffbea;
+  padding: 20px;
+  max-width: 100%;
+  width: 100%;
+  max-width: 700px;
+  margin: auto;
+  color: #333;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* العنوان */
+h1 {
+  color: #d4af37;
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+/* النصوص والعناوين */
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+  color: #444;
+}
+
+/* الحقول */
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  font-size: 16px;
+}
+
+/* زر الحاسبة */
+button {
+  margin-top: 20px;
+  padding: 12px 24px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+/* رابط واتساب */
+#whatsappLink {
+  display: block;
+  margin-top: 15px;
+  text-align: center;
+  font-weight: bold;
+  color: #007bff;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+/* استجابة للموبايل */
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+
+  input, select {
+    font-size: 14px;
+  }
+
+  #whatsappLink {
+    font-size: 14px;
+  }
+}
