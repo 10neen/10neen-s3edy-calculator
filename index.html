@@ -2,65 +2,152 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-<title>حاسبة الادوات الصحيه | معرض الصعيدي للادوات الصحيه</title>
-
-<link rel="icon" type="image/png" href="saidi-logo.PNG">
-
-
+  <title>حاسبة السباك | معرض الصعيدي</title>
   <link rel="stylesheet" href="calculator-style.css">
-  <meta name="author" content="معرض الصعيدي – بشتيل إمبابة">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
-  <!-- هيدر فيه اللوجو والعنوان -->
-  <div style="text-align: center; margin-bottom: 20px;">
-    <a href="https://facebook.com/saedytools" target="_blank">
+<div id="clockContainer" class="clock-bar">
+  <span id="dayName" class="highlight-day"></span> |
+  <span id="arabicTime"></span> |
+  <span id="gregorianDate"></span> |
+  <span id="hijriDate"></span>
+</div>
 
-      <img src="saidi-logo.PNG" alt="لوجو معرض الصعيدي" style="height: 80px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.2);">
-    </a>
-    <h1>🧮 احسب فاتورتك بنفسك</h1>
+
+
+
+  <div class="header">
+    <h1>🧮 حاسبة طلبات السباك</h1>
+    <p>مقدمة مجانًا من معرض الصعيدي – مسجد الرحمن بشتيل</p>
+	<p>ملحوظه هامه  -الاسعار باللسته الحاليه لشهر 10 /2025</p>
+    <button id="toggleDarkMode">🌙 تبديل الوضع الليلي</button>
   </div>
 
-  <p style="text-align: center; color: #555;">
-    دي مجرد محاولة لمحاربة الاستغلال وجشع بعض التجار، والأسعار هنا قبل الخصم كمان  
-    بالسعر الحالي في شهر سبتمبر 2025
-  </p>
+<div class="top-banner">
+  🏪 معرض الصعيدي للأدوات الصحية – مسجد الرحمن بشتيل - امبابه | ادراة المعرض الاستاذ حسن العدوي  01122019099    ادارة الجملة والتوزيع  الاستاذ احمد ادريس 01129777012
 
-  <label for="companySelect">اختار الشركة:</label>
+</div>
+
+
+
+
+  <label for="companySelect">اختر الشركة:</label>
   <select id="companySelect">
     <option value="">-- اختر الشركة --</option>
-    <option value="egic">إيجيك</option>
+    <option value="egic">المصرية الألمانية (بي آر، سمارت، كيسيل)</option>
     <option value="belissa">بيلسا ثيرم</option>
-    <option value="economy">نواكل اقتصادي</option>
-    <option value="lux">نواكل لوكس</option>
-    <option value="extras">كماليات تأسيس وتشطيب</option>
+    <option value="economy">لوازم التشطيب – اقتصادي</option>
+  <option value="lux"> (نواكل فاخر – ( ايديال، جروهي، جولد، بي جي، شيلد راجع لست الشركات</option>
   </select>
 
-  <div id="companyInfo" style="margin-top: 20px;"></div>
-  <div id="itemsContainer" style="margin-top: 20px;"></div>
+  <div id="sectionContainer" style="display:none;">
+    <label for="sectionSelect">اختر القسم:</label>
+    <select id="sectionSelect"></select>
+  </div>
 
-  <button onclick="calculateTotal()">احسب الإجمالي</button>
+  <div id="sizeContainer" style="display:none;">
+    <label for="sizeSelect">اختر القطر:</label>
+    <select id="sizeSelect"></select>
+  </div>
+
+  <div id="itemsContainer"></div>
+
+  <button onclick="calculateTotal()">✅ احسب الإجمالي</button>
   <p id="totalResult">الإجمالي: 0 جنيه</p>
 
-  <p style="color: green; font-weight: bold;">
-    ✔️ الأسعار قبل الخصم، وانتظر خصم خاص من معرض الصعيدي – شارع مسجد الرحمن، بشتيل إمبابة – لو قررت تشتري
-  </p>
 
-<a href="javascript:void(0)" id="whatsappLink">💬 اطلب شراء أو اسأل عن الخصم</a>
+<div class="actions">
+  <a
+    href="https://wa.me/201122019099?text=السلام عليكم، أريد عرض سعر للمنتجات المعروضة"
+    target="_blank"
+    id="whatsappRetail"
+    class="whatsapp-button"
+    style="display:none;"
+  >
+    📲 إرسال طلب عرض السعر لحسن العدوي (قطاعي)
+  </a>
+
+  <a
+    href="https://wa.me/201129777012?text=السلام عليكم، أريد عرض سعر للطلب بالجملة"
+    target="_blank"
+    id="whatsappWholesale"
+    class="whatsapp-button"
+    style="display:none;"
+  >
+    📦 إرسال طلب عرض السعر لأحمد إدريس (جملة)
+  </a>
+
+  <button
+    id="startNewOrder"
+    onclick="startNewOrder()"
+    style="display:none;"
+  >
+    🔄 تصفح قسم آخر / ابدأ من جديد
+  </button>
+</div>
 
 
-  <p style="color: gray; margin-top: 20px;">
-    تابعنا على صفحتنا على الفيس بوك، ولو عايز أصناف إضافية، اسألنا في معرض الصعيدي بشتيل إمبابة أو ابعتلنا طلباتك على الواتساب.
-  </p>
 
-  <script src="calculator-script.js"></script>
-
-  <!-- بصمة ملكية -->
-  <footer style="text-align: center; color: #888; font-size: 14px; margin-top: 40px;">
-    🔒 هذه الحاسبة مقدمة حصريًا من <strong>معرض الصعيدي</strong> – بشتيل إمبابة  
-    ولا يجوز إعادة نشرها أو استخدامها بدون إذن رسمي.
+  <footer>
+    🔒 هذه الحاسبة مقدمة حصريًا من <strong>معرض الصعيدي للأدوات الصحية</strong> – مسجد الرحمن بشتيل إمبابة والوراق.
   </footer>
 
+  <script src="productData.js"></script>
+  <script src="calculator-script.js"></script>
+  
+  
+  <script>
+function toArabicDigits(str) {
+  const arabicNumbers = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+  return str.replace(/\d/g, d => arabicNumbers[d]);
+}
+
+function updateClock() {
+  const now = new Date();
+
+  // الوقت بنظام 12 ساعة وبالأرقام العربية
+  let hours = now.getHours();
+  const minutes = now.getMinutes();
+  const seconds = now.getSeconds();
+  const ampm = hours >= 12 ? 'م' : 'ص'; // م = مساء، ص = صباح
+
+  hours = hours % 12;
+  hours = hours ? hours : 12; // الساعة 0 تبقى 12
+  const formattedHours = hours.toString().padStart(2, '0');
+  const formattedMinutes = minutes.toString().padStart(2, '0');
+  const formattedSeconds = seconds.toString().padStart(2, '0');
+
+  const timeStr = `${formattedHours}:${formattedMinutes}:${formattedSeconds} ${ampm}`;
+  document.getElementById("arabicTime").textContent = toArabicDigits(timeStr);
+
+  // التاريخ الميلادي
+  const gregorianOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+  const gregorianDate = now.toLocaleDateString('ar-EG', gregorianOptions);
+  document.getElementById("gregorianDate").textContent = gregorianDate;
+
+  // اسم اليوم
+  const dayName = now.toLocaleDateString('ar-EG', { weekday: 'long' });
+  document.getElementById("dayName").textContent = dayName;
+
+  // التاريخ الهجري
+  const hijriDate = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+    day: 'numeric', month: 'long', year: 'numeric'
+  }).format(now);
+  document.getElementById("hijriDate").textContent = hijriDate;
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+</script>
+
+
+    <div class="about-sa3edy">
+  <p>الغرض من الحاسبه انها تسهل الموضوع علي الصنيعي لما يشيل شغل مقاوله بضاعه ومصنعيه يقدر يعمل مقايسه لشغله , وميخسرش , بس خد بالك الاسعار اللي معاك اللي شغاله بتاريخ شهر 10 / 2025 وطبيعي انها تتغير وان شاء الله هنحدثها لما تتغير ,متنساش تراجع باستمرار الاسعار , وهنا احنا ادينالك السعر قبل الخصم وشطارتك تاخد خصم كويس لما تروح تشتري من اي مكان يعجبك وربنا يفتح ابواب الخير للجميع
+, يمكن مكملناش كل حاجه انت محتاجها بس اهي محاوله وربنا يقدرنا علي راحتك </p>
+</div>
+  
 </body>
 </html>
-
