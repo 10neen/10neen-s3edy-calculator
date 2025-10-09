@@ -1,217 +1,119 @@
-/* 💚 خلفية خضراء سماوية مريحة وناعمة */
-body {
-  /* تدرج أخضر فاتح وناعم، مستوحى من ألوان النعناع أو الأفوكادو الفاتح */
-  background: linear-gradient(to bottom right, #e0f7e6, #f3fff6);
-  font-family: "Cairo", sans-serif;
-  color: #2c3e50; /* لون نص داكن وهادئ */
-  text-align: center;
-  margin: 0;
-  padding: 20px;
-}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>حاسبة السباك | معرض الصعيدي</title>
+  <link rel="stylesheet" href="calculator-style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
 
-/* 🔶 الصناديق والخانات - ألوان ترابية دافئة */
-.product-item {
-  background-color: #fff8e1; /* لون بيج كريمي فاتح وهادئ */
-  border: 2px solid #a8c39e; /* إطار أخضر ترابي هادئ */
-  border-radius: 16px;
-  padding: 12px 18px;
-  margin: 10px auto;
-  width: 90%;
-  max-width: 450px;
-  /* ظل خفيف وناعم */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-}
-.product-item:hover {
-  background-color: #fcfcfc; /* أبيض ناصع مع التحويم */
-  transform: scale(1.01);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-}
+<div id="clockContainer" class="clock-bar">
+  <span id="dayName" class="highlight-day"></span> |
+  <span id="arabicTime"></span> |
+  <span id="gregorianDate"></span> |
+  <span id="hijriDate"></span>
+</div>
 
-/* 🧮 المدخلات */
+<div class="header">
+  <h1>🧮 حاسبة طلبات السباك</h1>
+<p>بتاريخ   1/10/2025</p>
+  <button id="toggleDarkMode">🌙 تبديل الوضع الليلي</button>
+</div>
 
-/* 🧮 المدخلات - تم تعديل الخلفية لبيج دافئ جداً */
-.qty-input {
-  width: 100%;
-  padding: 10px;
-  border: 1.5px solid #a8c39e;
-  border-radius: 10px;
-  margin-top: 6px;
-  text-align: center;
-  font-size: 1.1rem;
-  /* التغيير هنا: لون بيج دافئ وفاتح جداً */
-  background-color: #fffdf7;
-  color: #34495e;
-}
+<div class="top-banner">
 
+ 🏪 الصعيدي للأدوات الصحية – مسجد الرحمن بشتيل - إمبابة |  حسن العدوي  01122019099  | إأحمد إدريس  01129777012</div>
 
+<label for="companySelect">اختر الشركة:</label>
+<select id="companySelect">
+  <option value="">-- اختر الشركة --</option>
+  <option value="egic">المصرية الألمانية (بي آر، سمارت، كيسيل)</option>
+  <option value="belissa">بيلسا ثيرم</option>
+  <option value="economy">لوازم التشطيب – اقتصادي</option>
+  <option value="lux">(نواكل فاخر – ايديال، جروهي، جولد، بي جي، شيلد)</option>
+</select>
 
+<div id="sectionContainer" style="display:none;">
+  <label for="sectionSelect">اختر القسم:</label>
+  <select id="sectionSelect"></select>
+</div>
 
-/* 🔘 الأزرار - ألوان زرقاء عميقة وراقية */
-button {
-  background-color: #3498db; /* أزرق سماوي عميق */
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  padding: 12px 24px;
-  font-size: 1rem;
-  cursor: pointer;
-  margin: 10px;
-  transition: all 0.3s;
-  font-weight: bold;
-  box-shadow: 0 4px 6px rgba(52, 152, 219, 0.3); /* ظل بلون الزر */
-}
-button:hover {
-  background-color: #2980b9; /* أزرق أغمق قليلاً */
-  transform: scale(1.04);
-  box-shadow: 0 6px 8px rgba(41, 128, 185, 0.4);
-}
+<div id="sizeContainer" style="display:none;">
+  <label for="sizeSelect">اختر القطر:</label>
+  <select id="sizeSelect"></select>
+</div>
 
-/* 💬 النتيجة - تركيز بألوان هادئة */
-#totalResult {
-  background-color: #ffffff; /* خلفية بيضاء */
-  color: #27ae60; /* نص أخضر معتدل وواضح */
-  font-size: 1.3rem;
-  padding: 10px 20px;
-  border-radius: 10px;
-  margin-top: 20px;
-  /* ظل خفيف معتدل */
-  box-shadow: 0 0 10px rgba(39, 174, 96, 0.2); 
-  display: inline-block;
-  font-weight: bold;
-}
+<div id="itemsContainer"></div>
 
-/* 🌙 الوضع الليلي - داكن احترافي و مريح */
-.dark-mode {
-  /* تدرج داكن عميق */
-  background: linear-gradient(to bottom right, #1a1a1a, #242424);
-  color: #ecf0f1; /* نص رمادي فاتح مريح */
-}
-.dark-mode .product-item {
-  background-color: #2c3e50; /* خلفية داكنة للأصناف */
-  border-color: #34495e; /* إطار داكن */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-}
-.dark-mode .qty-input {
-  background-color: #34495e;
-  border-color: #555;
-  color: #ecf0f1;
-}
-.dark-mode button {
-  background-color: #2ecc71; /* زر أخضر ناعم في الوضع الليلي */
-  color: #111;
-  box-shadow: 0 4px 6px rgba(46, 204, 113, 0.3);
-}
-.dark-mode button:hover {
-  background-color: #27ae60;
-}
-.dark-mode #totalResult {
-  background-color: #34495e;
-  color: #f1c40f; /* نص أصفر ذهبي ناعم للنتيجة */
-  box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);
-}
+<button onclick="calculateTotal()">✅ احسب الإجمالي</button>
+<p id="totalResult">الإجمالي: 0 جنيه</p>
 
-/* 🧭 القوائم المنسدلة */
+<div class="whatsapp-actions">
+  <a href="https://wa.me/201122019099?text=السلام عليكم، أريد عرض سعر للمنتجات المعروضة"
+     target="_blank"
+     class="whatsapp-button small">
+  واتس  (بالمعرض) 📲  </a>
+
+  <a href="https://wa.me/201129777012?text=السلام عليكم، أريد عرض سعر للطلب بالجملة"
+     target="_blank"
+     class="whatsapp-button small">
+  واتس  (جملة) 📦  </a>
+</div>
 
 
 
-select {
-  background-color: #a8c39e;
-  border: 2px solid #a8c39e;
-  border-radius: 10px;
-  padding: 8px;
-  margin: 10px;
-  font-size: 1rem;
-  transition: all 0.3s;
-  color: #34495e;
+  <button id="startNewOrder" onclick="startNewOrder()" style="display:none;">
+    🔄 تصفح قسم آخر / ابدأ من جديد
+  </button>
+</div>
+
+<footer>
+  🔒 هذه الحاسبة مقدمة حصريًا من <strong>معرض الصعيدي للأدوات الصحية</strong> – مسجد الرحمن بشتيل إمبابة 
+</footer>
+
+<script src="productData.js"></script>
+<script src="calculator-script.js"></script>
+
+<script>
+function toArabicDigits(str) {
+  const arabicNumbers = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+  return str.replace(/\d/g, d => arabicNumbers[d]);
 }
 
+function updateClock() {
+  const now = new Date();
+  let hours = now.getHours();
+  const minutes = now.getMinutes();
+  const seconds = now.getSeconds();
+  const ampm = hours >= 12 ? 'م' : 'ص';
+  hours = hours % 12 || 12;
+  const timeStr = `${hours.toString().padStart(2, '0')}:${minutes
+    .toString()
+    .padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
+  document.getElementById("arabicTime").textContent = toArabicDigits(timeStr);
 
-.dark-mode select {
-    background-color: #34495e;
-    border-color: #555;
-    color: #ecf0f1;
+  const gregorianDate = now.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
+  document.getElementById("gregorianDate").textContent = gregorianDate;
+
+  document.getElementById("dayName").textContent = now.toLocaleDateString('ar-EG', { weekday: 'long' });
+
+  const hijriDate = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+    day: 'numeric', month: 'long', year: 'numeric'
+  }).format(now);
+  document.getElementById("hijriDate").textContent = hijriDate;
 }
-select:hover {
-  border-color: #7f8c8d;
-}
+setInterval(updateClock, 1000);
+updateClock();
+</script>
+<div class="about-sa3edy">
+  <p>
+ ملحوظه هامه  , الاسعار تتغير باستمرار بتغيير الشركات للست اسعارها وايضا احتمال وجود اخطاء في المدخلات امر وارد 
+نرجوا متابعة الاسعار كل فتره مع من تثق فيهم من التجار 
+  </p>
+</div>
 
 
-/* ⏰ تنسيق شريط الساعة والتاريخ - لون أخضر هادئ وبدون توهج */
-.clock-bar {
-  background: rgba(0, 0, 0, 0.05); /* خلفية شفافة وهادئة */
-  padding: 12px 25px;
-  border-radius: 20px;
-  display: inline-block;
-  margin: 15px auto;
-  text-align: center;
-  font-size: 1.9rem;
-  font-weight: bold;
-  color: #2ecc71; /* أخضر ناعم وهادئ بديل للفسفوري */
-  /* تم إزالة خاصية 'text-shadow' لتجنب التوهج المزعج */
-  letter-spacing: 1px;
-  transition: 0.3s ease;
-  font-family: "Tajawal", sans-serif;
-}
-.clock-bar:hover {
-  transform: scale(1.02);
-  background: rgba(0, 0, 0, 0.08);
-}
-/* تنسيق الساعة في الوضع الليلي */
-.dark-mode .clock-bar {
-    background: rgba(255, 255, 255, 0.05);
-    color: #f1c40f; /* أصفر ذهبي للساعة في الوضع الليلي */
-}
-
-/* 🌞 عناوين الصفحة */
-.header h1 {
-  color: #2980b9; /* أزرق عميق يتماشى مع الأزرار */
-  font-size: 2.3rem;
-  margin-bottom: 8px;
-  /* ظل خفيف جداً */
-  text-shadow: 0 0 4px rgba(41, 128, 185, 0.15);
-}
-.header p {
-  color: #555; /* رمادي أعمق قليلاً */
-  font-size: 1.1rem;
-  margin-top: 0;
-}
-/* عناوين في الوضع الليلي */
-.dark-mode .header h1 {
-    color: #3498db;
-}
-.dark-mode .header p {
-    color: #bdc3c7;
-}
-
-/* 🟢 أزرار الواتساب - لون أخضر أيقوني هادئ */
-.whatsapp-button {
-  background-color: #25d366; /* أخضر واتساب معتدل */
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  padding: 12px 24px;
-  font-size: 1rem;
-  cursor: pointer;
-  margin: 10px;
-  transition: all 0.3s;
-  font-weight: bold;
-  box-shadow: 0 4px 6px rgba(37, 211, 102, 0.4); /* ظل بلون الزر */
-  display: inline-flex; /* لضبط الأيقونة والنص معاً */
-  align-items: center;
-}
-.whatsapp-button:hover {
-  background-color: #1ebe55; /* أخضر أغمق قليلاً مع التحويم */
-  transform: scale(1.05);
-  box-shadow: 0 6px 8px rgba(30, 190, 85, 0.5);
-}
-
-/* 🌙 الوضع الليلي لأزرار واتساب */
-.dark-mode .whatsapp-button {
-    background-color: #20b05b;
-    box-shadow: 0 4px 6px rgba(32, 176, 91, 0.5);
-    color: #f3f3f3;
-}
-.dark-mode .whatsapp-button:hover {
-    background-color: #1a904d;
-}
+</body>
+</html>
