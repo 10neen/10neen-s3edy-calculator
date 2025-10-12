@@ -1,182 +1,181 @@
 /* 💚 خلفية خضراء سماوية مريحة وناعمة */
-body {
-  /* تدرج أخضر فاتح وناعم، مستوحى من ألوان النعناع أو الأفوكادو الفاتح */
-  background: linear-gradient(to bottom right, #e0f7e6, #f3fff6);
-  font-family: "Cairo", sans-serif;
-  color: #2c3e50; /* لون نص داكن وهادئ */
-  text-align: center;
-  margin: 0;
-  padding: 20px;
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%; /* تأكد من أن العرض 100% */
+    min-height: 100%; /* تأكد من أن الارتفاع الأدنى 100% ليملأ الشاشة */
+    font-family: "Tajawal", sans-serif; /* تم تحديث الخط لـ Tajawal */
+    color: #2c3e50; /* لون نص داكن وهادئ */
+    background: linear-gradient(to bottom right, #e0f7e6, #f3fff6); /* تدرج أخضر فاتح وناعم */
+    display: flex; /* لتمكين Flexbox لتوسيط المحتوى */
+    flex-direction: column; /* ترتيب المحتوى عمودياً */
+    align-items: center; /* توسيط المحتوى أفقياً */
+    justify-content: flex-start; /* بدء المحتوى من الأعلى */
+    box-sizing: border-box; /* لضمان أن الـ padding لا يكسر الـ 100% width/height */
 }
 
 /* 🔶 الصناديق والخانات - ألوان ترابية دافئة */
 .product-item {
-  background-color: #fff8e1; /* لون بيج كريمي فاتح وهادئ */
-  border: 2px solid #a8c39e; /* إطار أخضر ترابي هادئ */
-  border-radius: 16px;
-  padding: 12px 18px;
-  margin: 10px auto;
-  width: 90%;
-  max-width: 450px;
-  /* ظل خفيف وناعم */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+    background-color: #fff8e1; /* لون بيج كريمي فاتح وهادئ */
+    border: 2px solid #a8c39e; /* إطار أخضر ترابي هادئ */
+    border-radius: 16px;
+    padding: 12px 18px;
+    margin: 10px auto;
+    width: 95%; /* زيادة العرض قليلاً ليملأ مساحة أكبر على الموبايل */
+    max-width: 450px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    box-sizing: border-box; /* لضمان أن الـ padding لا يكسر الـ 95% width */
 }
 .product-item:hover {
-  background-color: #fcfcfc; /* أبيض ناصع مع التحويم */
-  transform: scale(1.01);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    background-color: #fcfcfc;
+    transform: scale(1.01);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
 /* 🧮 المدخلات */
-
-/* 🧮 المدخلات - تم تعديل الخلفية لبيج دافئ جداً */
 .qty-input {
-  width: 100%;
-  padding: 10px;
-  border: 1.5px solid #a8c39e;
-  border-radius: 10px;
-  margin-top: 6px;
-  text-align: center;
-  font-size: 1.1rem;
-  /* التغيير هنا: لون بيج دافئ وفاتح جداً */
-  background-color: #fffdf7;
-  color: #34495e;
+    width: calc(100% - 20px); /* Adjust width to account for padding */
+    padding: 10px;
+    border: 1.5px solid #a8c39e;
+    border-radius: 10px;
+    margin-top: 6px;
+    text-align: center;
+    font-size: 1.1rem;
+    background-color: #fffdf7;
+    color: #34495e;
+    box-sizing: border-box; /* Make sure padding is included in width */
 }
-
-
-
 
 /* 🔘 الأزرار - ألوان زرقاء عميقة وراقية */
 button {
-  background-color: #3498db; /* أزرق سماوي عميق */
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  padding: 12px 24px;
-  font-size: 1rem;
-  cursor: pointer;
-  margin: 10px;
-  transition: all 0.3s;
-  font-weight: bold;
-  box-shadow: 0 4px 6px rgba(52, 152, 219, 0.3); /* ظل بلون الزر */
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 10px;
+    transition: all 0.3s;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(52, 152, 219, 0.3);
 }
 button:hover {
-  background-color: #2980b9; /* أزرق أغمق قليلاً */
-  transform: scale(1.04);
-  box-shadow: 0 6px 8px rgba(41, 128, 185, 0.4);
+    background-color: #2980b9;
+    transform: scale(1.04);
+    box-shadow: 0 6px 8px rgba(41, 128, 185, 0.4);
 }
 
 /* 💬 النتيجة - تركيز بألوان هادئة */
 #totalResult {
-  background-color: #ffffff; /* خلفية بيضاء */
-  color: #27ae60; /* نص أخضر معتدل وواضح */
-  font-size: 1.3rem;
-  padding: 10px 20px;
-  border-radius: 10px;
-  margin-top: 20px;
-  /* ظل خفيف معتدل */
-  box-shadow: 0 0 10px rgba(39, 174, 96, 0.2); 
-  display: inline-block;
-  font-weight: bold;
+    background-color: #ffffff;
+    color: #27ae60;
+    font-size: 1.3rem;
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    box-shadow: 0 0 10px rgba(39, 174, 96, 0.2);
+    display: inline-block;
+    font-weight: bold;
 }
 
 /* 🌙 الوضع الليلي - داكن احترافي و مريح */
 .dark-mode {
-  /* تدرج داكن عميق */
-  background: linear-gradient(to bottom right, #1a1a1a, #242424);
-  color: #ecf0f1; /* نص رمادي فاتح مريح */
+    background: linear-gradient(to bottom right, #1a1a1a, #242424);
+    color: #ecf0f1;
 }
 .dark-mode .product-item {
-  background-color: #2c3e50; /* خلفية داكنة للأصناف */
-  border-color: #34495e; /* إطار داكن */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    background-color: #2c3e50;
+    border-color: #34495e;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 .dark-mode .qty-input {
-  background-color: #34495e;
-  border-color: #555;
-  color: #ecf0f1;
+    background-color: #34495e;
+    border-color: #555;
+    color: #ecf0f1;
 }
 .dark-mode button {
-  background-color: #2ecc71; /* زر أخضر ناعم في الوضع الليلي */
-  color: #111;
-  box-shadow: 0 4px 6px rgba(46, 204, 113, 0.3);
+    background-color: #2ecc71;
+    color: #111;
+    box-shadow: 0 4px 6px rgba(46, 204, 113, 0.3);
 }
 .dark-mode button:hover {
-  background-color: #27ae60;
+    background-color: #27ae60;
 }
 .dark-mode #totalResult {
-  background-color: #34495e;
-  color: #f1c40f; /* نص أصفر ذهبي ناعم للنتيجة */
-  box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);
+    background-color: #34495e;
+    color: #f1c40f;
+    box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);
 }
 
 /* 🧭 القوائم المنسدلة */
-
-
-
 select {
-  background-color: #a8c39e;
-  border: 2px solid #a8c39e;
-  border-radius: 10px;
-  padding: 8px;
-  margin: 10px;
-  font-size: 1rem;
-  transition: all 0.3s;
-  color: #34495e;
+    background-color: #a8c39e;
+    border: 2px solid #a8c39e;
+    border-radius: 10px;
+    padding: 8px;
+    margin: 10px;
+    font-size: 1rem;
+    transition: all 0.3s;
+    color: #34495e;
+    width: 95%; /* جعل القوائم المنسدلة تتكيف مع العرض */
+    max-width: 450px; /* لا تزيد عن 450 بكسل */
+    box-sizing: border-box;
 }
-
-
 .dark-mode select {
     background-color: #34495e;
     border-color: #555;
     color: #ecf0f1;
 }
 select:hover {
-  border-color: #7f8c8d;
+    border-color: #7f8c8d;
 }
 
-
-/* ⏰ تنسيق شريط الساعة والتاريخ - لون أخضر هادئ وبدون توهج */
+/* ⏰ تنسيق شريط الساعة والتاريخ */
 .clock-bar {
-  background: rgba(0, 0, 0, 0.05); /* خلفية شفافة وهادئة */
-  padding: 12px 25px;
-  border-radius: 20px;
-  display: inline-block;
-  margin: 15px auto;
-  text-align: center;
-  font-size: 1.9rem;
-  font-weight: bold;
-  color: #2ecc71; /* أخضر ناعم وهادئ بديل للفسفوري */
-  /* تم إزالة خاصية 'text-shadow' لتجنب التوهج المزعج */
-  letter-spacing: 1px;
-  transition: 0.3s ease;
-  font-family: "Tajawal", sans-serif;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 12px 25px;
+    border-radius: 20px;
+    display: inline-block;
+    margin: 15px auto;
+    text-align: center;
+    font-size: 1.9rem;
+    font-weight: bold;
+    color: #2ecc71;
+    letter-spacing: 1px;
+    transition: 0.3s ease;
+    font-family: "Tajawal", sans-serif;
+    max-width: 90%; /* تحديد أقصى عرض لشريط الساعة */
+    box-sizing: border-box;
 }
 .clock-bar:hover {
-  transform: scale(1.02);
-  background: rgba(0, 0, 0, 0.08);
+    transform: scale(1.02);
+    background: rgba(0, 0, 0, 0.08);
 }
-/* تنسيق الساعة في الوضع الليلي */
 .dark-mode .clock-bar {
     background: rgba(255, 255, 255, 0.05);
-    color: #f1c40f; /* أصفر ذهبي للساعة في الوضع الليلي */
+    color: #f1c40f;
 }
 
 /* 🌞 عناوين الصفحة */
+.header {
+    width: 100%; /* اجعل الـ header يملأ العرض */
+    text-align: center;
+    padding: 0 10px; /* إضافة padding لتجنب الالتصاق بالحواف */
+    box-sizing: border-box;
+}
 .header h1 {
-  color: #2980b9; /* أزرق عميق يتماشى مع الأزرار */
-  font-size: 2.3rem;
-  margin-bottom: 8px;
-  /* ظل خفيف جداً */
-  text-shadow: 0 0 4px rgba(41, 128, 185, 0.15);
+    color: #2980b9;
+    font-size: 2.3rem;
+    margin-bottom: 8px;
+    text-shadow: 0 0 4px rgba(41, 128, 185, 0.15);
 }
 .header p {
-  color: #555; /* رمادي أعمق قليلاً */
-  font-size: 1.1rem;
-  margin-top: 0;
+    color: #555;
+    font-size: 1.1rem;
+    margin-top: 0;
 }
-/* عناوين في الوضع الليلي */
 .dark-mode .header h1 {
     color: #3498db;
 }
@@ -184,29 +183,38 @@ select:hover {
     color: #bdc3c7;
 }
 
-/* 🟢 أزرار الواتساب - لون أخضر أيقوني هادئ */
+/* 🟢 أزرار الواتساب */
+.whatsapp-actions {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap; /* للسماح للأزرار بالانتقال لسطر جديد */
+    width: 95%; /* لجعل الحاوية تتكيف مع العرض */
+    max-width: 450px;
+    box-sizing: border-box;
+}
 .whatsapp-button {
-  background-color: #25d366; /* أخضر واتساب معتدل */
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  padding: 12px 24px;
-  font-size: 1rem;
-  cursor: pointer;
-  margin: 10px;
-  transition: all 0.3s;
-  font-weight: bold;
-  box-shadow: 0 4px 6px rgba(37, 211, 102, 0.4); /* ظل بلون الزر */
-  display: inline-flex; /* لضبط الأيقونة والنص معاً */
-  align-items: center;
+    background-color: #25d366;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 0; /* تم إزالة الـ margin ليتولاه الـ gap */
+    transition: all 0.3s;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(37, 211, 102, 0.4);
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none; /* إزالة خط الرابط الافتراضي */
 }
 .whatsapp-button:hover {
-  background-color: #1ebe55; /* أخضر أغمق قليلاً مع التحويم */
-  transform: scale(1.05);
-  box-shadow: 0 6px 8px rgba(30, 190, 85, 0.5);
+    background-color: #1ebe55;
+    transform: scale(1.05);
+    box-shadow: 0 6px 8px rgba(30, 190, 85, 0.5);
 }
-
-/* 🌙 الوضع الليلي لأزرار واتساب */
 .dark-mode .whatsapp-button {
     background-color: #20b05b;
     box-shadow: 0 4px 6px rgba(32, 176, 91, 0.5);
@@ -215,45 +223,153 @@ select:hover {
 .dark-mode .whatsapp-button:hover {
     background-color: #1a904d;
 }
-
-/* 📱 تحسين الخط على الموبايل */
-@media (max-width: 768px) {
-  body {
-    font-size: 18px;
-  }
-
-  h1 {
-    font-size: 22px;
-  }
-
-  p, label, select, button, .clock-bar {
-    font-size: 16px;
-  }
-
-  .product-item {
-    padding: 10px 14px;
-  }
-
-  .qty-input {
-    font-size: 1.2rem;
-  }
-
-  #totalResult {
-    font-size: 1.2rem;
-  }
-}
-
-.whatsapp-actions {
-  margin-top: 15px;
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
 .whatsapp-button.small {
-  padding: 8px 14px;
-  font-size: 0.9rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(37, 211, 102, 0.3);
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(37, 211, 102, 0.3);
+}
+
+/* 📱 تحسين الخط على الموبايل وبعض التعديلات الإضافية */
+@media (max-width: 768px) {
+    /* تم إزالة body هنا لأن html, body في الأعلى تتولى الأمر */
+
+    .header h1 {
+        font-size: 1.8rem; /* تصغير حجم العنوان الرئيسي */
+    }
+    .header p {
+        font-size: 1rem;
+    }
+
+    .clock-bar {
+        font-size: 1.2rem; /* تصغير حجم الساعة */
+        padding: 8px 15px;
+        margin: 10px auto;
+    }
+    .product-item {
+        padding: 10px 14px;
+        width: 98%; /* زيادة العرض ليملأ الشاشة أكثر */
+        margin: 8px auto;
+    }
+    .qty-input {
+        font-size: 1rem; /* حجم خط المدخلات */
+        padding: 8px;
+    }
+    select {
+        font-size: 0.95rem; /* حجم خط القوائم المنسدلة */
+        padding: 6px;
+        margin: 8px auto;
+        width: 98%;
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+        margin: 8px;
+    }
+    #totalResult {
+        font-size: 1.1rem;
+        padding: 8px 15px;
+    }
+    .whatsapp-button {
+        font-size: 0.9rem;
+        padding: 10px 18px;
+    }
+    .whatsapp-button.small {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+    }
+    .top-banner {
+        font-size: 0.8rem; /* تصغير حجم البانر العلوي على الموبايل */
+        padding: 8px 10px;
+    }
+    footer {
+        font-size: 0.75rem; /* تصغير حجم الفوتر */
+        padding: 8px 10px;
+    }
+    .about-sa3edy p {
+        font-size: 0.8rem; /* تصغير حجم ملاحظة الأسعار */
+        padding: 10px;
+    }
+}
+
+/* تنسيق البانر العلوي (الأخضر) */
+.top-banner {
+    background-color: #a8c39e; /* لون أخضر ترابي */
+    color: #fff;
+    padding: 10px 20px;
+    margin: 15px auto;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 95%; /* جعلها متجاوبة */
+    max-width: 600px; /* أقصى عرض */
+    box-sizing: border-box;
+}
+.dark-mode .top-banner {
+    background-color: #34495e; /* لون داكن في الوضع الليلي */
+    color: #ecf0f1;
+}
+
+/* تنسيق الفوتر */
+footer {
+    margin-top: 30px;
+    padding: 15px 20px;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 0.85rem;
+    color: #666;
+    width: 100%;
+    box-sizing: border-box;
+}
+.dark-mode footer {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-top-color: rgba(255, 255, 255, 0.1);
+    color: #bbb;
+}
+
+/* تنسيق الملاحظة الهامة عن الأسعار */
+.about-sa3edy {
+    background-color: #ffe0b2; /* لون برتقالي فاتح للتنبيه */
+    border-left: 5px solid #ff9800; /* شريط جانبي بلون التنبيه */
+    padding: 15px;
+    margin: 20px auto;
+    border-radius: 8px;
+    color: #4e342e; /* لون نص داكن مناسب */
+    font-size: 0.9rem;
+    line-height: 1.6;
+    max-width: 450px;
+    width: 95%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+.dark-mode .about-sa3edy {
+    background-color: #5d4037; /* لون داكن للتنبيه في الوضع الليلي */
+    border-left-color: #ffb74d;
+    color: #fffde7;
+}
+
+/* تنسيق الحاويات التي تظهر وتختفي */
+#sectionContainer, #sizeContainer {
+    width: 95%;
+    max-width: 450px;
+    margin: 10px auto;
+    text-align: right; /* لجعل الـ label في اليمين */
+    box-sizing: border-box;
+}
+#sectionContainer label, #sizeContainer label {
+    display: block; /* لجعل الـ label يأخذ سطراً خاصاً */
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #34495e;
+}
+.dark-mode #sectionContainer label, .dark-mode #sizeContainer label {
+    color: #ecf0f1;
+}
+
+#itemsContainer {
+    width: 95%;
+    max-width: 450px;
+    margin: 10px auto;
+    box-sizing: border-box;
 }
