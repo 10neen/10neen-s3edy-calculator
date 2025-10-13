@@ -6,114 +6,101 @@
   <link rel="stylesheet" href="calculator-style.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
+
 <body>
 
-<div id="clockContainer" class="clock-bar">
-  <span id="dayName" class="highlight-day"></span> |
-  <span id="arabicTime"></span> |
-  <span id="gregorianDate"></span> |
-  <span id="hijriDate"></span>
-</div>
+  <!-- 🌅 خلفية خفيفة عليها اللوجو -->
+  <div class="background-logo"></div>
 
-<div class="header">
-  <h1>🧮 حاسبة طلبات السباك</h1>
-<p>بتاريخ   1/10/2025</p>
-  <button id="toggleDarkMode">🌙 تبديل الوضع الليلي</button>
-</div>
+  <!-- ⏰ الشريط العلوي -->
+  <div id="clockContainer" class="clock-bar">
+    <span id="dayName" class="highlight-day"></span> |
+    <span id="arabicTime"></span> |
+    <span id="gregorianDate"></span> |
+    <span id="hijriDate"></span>
+  </div>
 
-<div class="top-banner">
+  <!-- 🧮 الهيدر -->
+  <div class="header">
+    <img src="saidi-logo.PNG" alt="لوجو الصعيدي" class="logo-top">
+    <h1>حاسبة طلبات السباك</h1>
+    <p>بتاريخ <span id="todayDate">1/10/2025</span></p>
+    <button id="toggleDarkMode">🌙 تبديل الوضع الليلي</button>
+  </div>
 
- 🏪 الصعيدي للأدوات الصحية – مسجد الرحمن بشتيل - إمبابة |  حسن العدوي  01122019099  | إأحمد إدريس  01129777012</div>
+  <!-- 🏪 بيانات التواصل -->
+  <div class="top-banner">
+    🏪 الصعيدي للأدوات الصحية – مسجد الرحمن بشتيل - إمبابة |
+    حسن العدوي 01122019099 | أحمد إدريس 01129777012
+  </div>
 
-<label for="companySelect">اختر الشركة:</label>
-<select id="companySelect">
-  <option value="">-- اختر الشركة --</option>
-  <option value="egic">المصرية الألمانية (بي آر، سمارت، كيسيل)</option>
-  <option value="belissa">بيلسا ثيرم</option>
-  <option value="economy">لوازم التشطيب – اقتصادي</option>
-  <option value="lux">(نواكل فاخر – ايديال، جروهي، جولد، بي جي، شيلد)</option>
-</select>
+  <!-- 🔽 القوائم -->
+  <label for="companySelect">اختر الشركة:</label>
+  <select id="companySelect">
+    <option value="">-- اختر الشركة --</option>
+    <option value="egic">المصرية الألمانية (بي آر، سمارت، كيسيل)</option>
+    <option value="belissa">بيلسا ثيرم</option>
+    <option value="economy">لوازم التشطيب – اقتصادي</option>
+    <option value="lux">(نواكل فاخر – ايديال، جروهي، جولد، بي جي، شيلد)</option>
+  </select>
 
-<div id="sectionContainer" style="display:none;">
-  <label for="sectionSelect">اختر القسم:</label>
-  <select id="sectionSelect"></select>
-</div>
+  <div id="sectionContainer" style="display:none;">
+    <label for="sectionSelect">اختر القسم:</label>
+    <select id="sectionSelect"></select>
+  </div>
 
-<div id="sizeContainer" style="display:none;">
-  <label for="sizeSelect">اختر القطر:</label>
-  <select id="sizeSelect"></select>
-</div>
+  <div id="sizeContainer" style="display:none;">
+    <label for="sizeSelect">اختر القطر:</label>
+    <select id="sizeSelect"></select>
+  </div>
 
-<div id="itemsContainer"></div>
+  <div id="itemsContainer"></div>
 
-<button onclick="calculateTotal()">✅ احسب الإجمالي</button>
-<p id="totalResult">الإجمالي: 0 جنيه</p>
+  <button onclick="calculateTotal()">✅ احسب الإجمالي</button>
+  <button id="showInvoice" onclick="showInvoice()" style="display:none;">🧾 عرض الفاتورة</button>
+  <p id="totalResult">الإجمالي: 0 جنيه</p>
 
-<div class="whatsapp-actions">
-  <a href="https://wa.me/201122019099?text=السلام عليكم، أريد عرض سعر للمنتجات المعروضة"
-     target="_blank"
-     class="whatsapp-button small">
-  واتس  (بالمعرض) 📲  </a>
-
-  <a href="https://wa.me/201129777012?text=السلام عليكم، أريد عرض سعر للطلب بالجملة"
-     target="_blank"
-     class="whatsapp-button small">
-  واتس  (جملة) 📦  </a>
-</div>
-
-
+  <!-- 🔗 روابط واتساب -->
+  <div class="whatsapp-actions">
+    <a id="whatsappRetail" href="#" target="_blank" class="whatsapp-button small" style="display:none;">
+      واتس (بالمعرض) 📲
+    </a>
+    <a id="whatsappWholesale" href="#" target="_blank" class="whatsapp-button small" style="display:none;">
+      واتس (جملة) 📦
+    </a>
+  </div>
 
   <button id="startNewOrder" onclick="startNewOrder()" style="display:none;">
     🔄 تصفح قسم آخر / ابدأ من جديد
   </button>
-</div>
 
-<footer>
-  🔒 هذه الحاسبة مقدمة حصريًا من <strong>معرض الصعيدي للأدوات الصحية</strong> – مسجد الرحمن بشتيل إمبابة 
-</footer>
+  <!-- ℹ️ ملاحظات -->
+  <div class="about-sa3edy">
+    <p>
+      ⚠️ ملحوظة: الأسعار تتغير باستمرار حسب الشركات واحتمال وجود أخطاء وارد.
+      يُرجى مراجعة الأسعار دوريًا مع التجار الموثوقين.
+    </p>
+  </div>
 
-<script src="productData.js"></script>
-<script src="calculator-script.js"></script>
+  <!-- 🧾 نافذة الفاتورة -->
+  <div id="invoicePopup" class="invoice-popup" style="display:none;">
+    <div class="invoice-content">
+      <img src="saidi-logo.PNG" class="invoice-logo" alt="لوجو الفاتورة">
+      <h2>فاتورة مبدئية</h2>
+      <div id="invoiceDetails"></div>
+      <button onclick="closeInvoice()">❌ إغلاق</button>
+    </div>
+  </div>
 
-<script>
-function toArabicDigits(str) {
-  const arabicNumbers = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
-  return str.replace(/\d/g, d => arabicNumbers[d]);
-}
+  <footer>
+    <img src="saidi-logo.PNG" alt="لوجو الصعيدي" class="footer-logo">
+    🔒 مقدمة حصريًا من <strong>معرض الصعيدي للأدوات الصحية</strong> – مسجد الرحمن بشتيل إمبابة
+  </footer>
 
-function updateClock() {
-  const now = new Date();
-  let hours = now.getHours();
-  const minutes = now.getMinutes();
-  const seconds = now.getSeconds();
-  const ampm = hours >= 12 ? 'م' : 'ص';
-  hours = hours % 12 || 12;
-  const timeStr = `${hours.toString().padStart(2, '0')}:${minutes
-    .toString()
-    .padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
-  document.getElementById("arabicTime").textContent = toArabicDigits(timeStr);
-
-  const gregorianDate = now.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
-  document.getElementById("gregorianDate").textContent = gregorianDate;
-
-  document.getElementById("dayName").textContent = now.toLocaleDateString('ar-EG', { weekday: 'long' });
-
-  const hijriDate = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
-    day: 'numeric', month: 'long', year: 'numeric'
-  }).format(now);
-  document.getElementById("hijriDate").textContent = hijriDate;
-}
-setInterval(updateClock, 1000);
-updateClock();
-</script>
-<div class="about-sa3edy">
-  <p>
- ملحوظه هامه  , الاسعار تتغير باستمرار بتغيير الشركات للست اسعارها وايضا احتمال وجود اخطاء في المدخلات امر وارد 
-نرجوا متابعة الاسعار كل فتره مع من تثق فيهم من التجار 
-  </p>
-</div>
-
+  <script src="productData.js"></script>
+  <script src="calculator-script.js"></script>
 
 </body>
 </html>
