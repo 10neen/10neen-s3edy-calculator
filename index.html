@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>حاسبة السباك | معرض الصعيدي</title>
+  <link rel="icon" href="saidi-logo.PNG" type="image/png">
+
   <link rel="stylesheet" href="calculator-style.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -101,6 +103,54 @@
 
   <script src="productData.js"></script>
   <script src="calculator-script.js"></script>
+
+<script>
+  function gregorianToHijri(date) {
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+
+    const jd = Math.floor((1461 * (year + 4800 + Math.floor((month - 14) / 12))) / 4) +
+               Math.floor((367 * (month - 2 - 12 * Math.floor((month - 14) / 12))) / 12) -
+               Math.floor((3 * Math.floor((year + 4900 + Math.floor((month - 14) / 12)) / 100)) / 4) +
+               day - 32075;
+
+    const l = jd - 1948440 + 10632;
+    const n = Math.floor((l - 1) / 10631);
+    const r = l - 10631 * n;
+    const j = Math.floor((r - 1) / 354.366);
+    const q = r - Math.floor(354.366 * j);
+    const z = Math.floor((q - 1) / 29.5);
+    const hijriDay = q - Math.floor(29.5 * z);
+    const hijriMonth = z + 1;
+    const hijriYear = 30 * n + j;
+
+    const hijriMonths = ["محرم", "صفر", "ربيع الأول", "ربيع الآخر", "جمادى الأولى", "جمادى الآخرة",
+                         "رجب", "شعبان", "رمضان", "شوال", "ذو القعدة", "ذو الحجة"];
+
+    return `${hijriDay} ${hijriMonths[hijriMonth - 1]} ${hijriYear} هـ`;
+  }
+
+  function updateClock() {
+    const now = new Date();
+    const dayNames = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+    const dayName = dayNames[now.getDay()];
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const arabicTime = `${hours}:${minutes}`;
+    const gregorianDate = now.toLocaleDateString('ar-EG');
+    const hijriDate = gregorianToHijri(now);
+
+    document.getElementById("dayName").textContent = dayName;
+    document.getElementById("arabicTime").textContent = arabicTime;
+    document.getElementById("gregorianDate").textContent = gregorianDate;
+    document.getElementById("hijriDate").textContent = hijriDate;
+  }
+
+  setInterval(updateClock, 1000);
+  updateClock();
+</script>
+
 
 </body>
 </html>
