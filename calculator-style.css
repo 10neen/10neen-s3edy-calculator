@@ -1,4 +1,4 @@
-/* 🌅 إعداد عام */
+/* 🎨 إعداد عام */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -11,7 +11,7 @@ html, body {
   width: 100%;
   overflow-x: hidden;
   background: #7d94c2;
-  color: #222;
+  color: #f0e6d2;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -20,7 +20,7 @@ html, body {
   min-height: 100vh;
 }
 
-/* 🌄 خلفية اللوجو الشفافة */
+/* 🌄 خلفية اللوجو */
 .background-logo {
   position: fixed;
   top: 0;
@@ -37,7 +37,7 @@ html, body {
 .clock-bar {
   width: 100%;
   background: #004aad;
-  color: #113f37;
+  color: #f0e6d2;
   padding: 8px;
   font-size: 15px;
   text-align: center;
@@ -56,19 +56,19 @@ html, body {
 }
 
 .header h1 {
-  color: #004aad;
+  color: #ffd700;
   font-size: 32px;
   margin: 10px 0;
 }
 
 .header p {
   font-size: 16px;
-  color: #444;
+  color: #f0e6d2;
 }
 
 #toggleDarkMode {
   background-color: #0e376b;
-  color: rgb(24, 7, 7);
+  color: #f0e6d2;
   border: none;
   border-radius: 8px;
   padding: 8px 15px;
@@ -84,7 +84,7 @@ html, body {
 /* 🏪 بيانات التواصل */
 .top-banner {
   background-color: #bb7325;
-  color: #271515;
+  color: #f5e6c8;
   font-weight: bold;
   padding: 10px;
   margin-top: 10px;
@@ -98,6 +98,7 @@ label {
   display: block;
   margin: 15px 0 5px;
   font-weight: bold;
+  color: #f0e6d2;
 }
 
 select, input[type="number"] {
@@ -108,11 +109,13 @@ select, input[type="number"] {
   width: 90%;
   max-width: 400px;
   margin-bottom: 10px;
+  background-color: #e6d5b8;
+  color: #222;
 }
 
 button {
   background-color: #004aad;
-  color: rgb(78, 54, 54);
+  color: #f8cfcf;
   border: none;
   border-radius: 10px;
   padding: 10px 20px;
@@ -130,7 +133,7 @@ button:hover {
   font-size: 20px;
   font-weight: bold;
   margin-top: 15px;
-  color: #004aad;
+  color: #ffd700;
 }
 
 /* 🧾 عناصر المنتجات */
@@ -144,6 +147,7 @@ button:hover {
   max-width: 500px;
   text-align: right;
   font-size: 17px;
+  color: #f0e6d2;
 }
 
 /* 💬 واتساب */
@@ -156,7 +160,7 @@ button:hover {
 
 .whatsapp-button {
   background-color: #25D366;
-  color: rgb(85, 54, 54);
+  color: #271515;
   text-decoration: none;
   padding: 10px 15px;
   border-radius: 10px;
@@ -183,17 +187,18 @@ button:hover {
 }
 
 .invoice-content {
-  background: #cc4949;
+  background: #9425b6;
   border-radius: 15px;
   padding: 20px;
   width: 90%;
   max-width: 600px;
   text-align: center;
   box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  color: #f0e6d2;
 }
 
 .invoice-content h2 {
-  color: #004aad;
+  color: #ffd700;
   margin-bottom: 15px;
 }
 
@@ -213,32 +218,34 @@ button:hover {
 /* 🌙 الوضع الليلي */
 body.dark-mode {
   background: #1a5a80;
-  color: #5a1b42;
+  color: #f0e6d2;
 }
 
 body.dark-mode .header h1 {
-  color: #1a668a;
+  color: #ffd700;
 }
 
 body.dark-mode .product-item {
   background: #1e1e1e;
   border-color: #ffa94d;
+  color: #f0e6d2;
 }
 
 body.dark-mode .clock-bar {
   background: #222;
+  color: #cceeff;
 }
 
 body.dark-mode .top-banner {
   background: #000000;
-  color: #042e15;
+  color: #f0d8b8;
 }
 
 /* ℹ️ الفوتر */
 footer {
   margin-top: auto;
   background: #004aad;
-  color: rgb(69, 148, 135);
+  color: #f0e6d2;
   padding: 15px;
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
