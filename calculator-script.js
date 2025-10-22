@@ -217,226 +217,160 @@ const productData = {
 	
 
 
-// calculator-script.js
-
-
 // تعريف أرقام الواتساب
 const WHATSAPP_RETAIL = "01122019099"; // حسن العدوي (قطاعي)
 const WHATSAPP_WHOLESALE = "01129777012"; // أحمد إدريس (جملة)
 
-// --------------------------------------------------
-// ** طبقة الحماية والحصرية (جديد) **
-// --------------------------------------------------
-// تعطيل النقر بالزر الأيمن
+// تعطيل النقر بالزر الأيمن والمطورين
 document.addEventListener('contextmenu', event => event.preventDefault());
-
-// تعطيل مفاتيح المطورين وعرض المصدر
 document.onkeydown = function(e) {
-    if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'C'.charCodeAt(0))) || (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0))) {
-        return false;
-    }
+  if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'C'.charCodeAt(0))) || (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0))) {
+    return false;
+  }
 };
 
-// --------------------------------------------------
-// 1. وظيفة تبديل الوضع الليلي (Dark Mode)
-// --------------------------------------------------
+// تبديل الوضع الليلي
 document.getElementById('toggleDarkMode').addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode');
+  document.body.classList.toggle('dark-mode');
 });
 
+// القوائم المنسدلة
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('companySelect').value = "";
+});
 
-
-// --------------------------------------------------
-// 2. وظائف ملء القوائم المنسدلة
-// --------------------------------------------------
-
-// وظيفة تهيئة القائمة المنسدلة للشركات عند تحميل الصفحة
-function populateCompanySelect() {
-    const companySelect = document.getElementById('companySelect');
-    // إزالة الخيارات المضافة يدوياً في HTML لتجنب التكرار
-    // يفضل إضافة خيارات الشركات في JS لكي يتم استخدام المفاتيح مباشرة
-    // لكن طالما هي في HTML، فلن نغيرها، فقط نتأكد من اختيار أول عنصر فارغ.
-}
-// تشغيلها عند تحميل الكود
-document.addEventListener('DOMContentLoaded', populateCompanySelect);
-
-
-// عند تغيير الشركة
 document.getElementById('companySelect').addEventListener('change', function () {
-    const company = this.value;
-    const sectionSelect = document.getElementById('sectionSelect');
-    const sizeSelect = document.getElementById('sizeSelect');
-    const itemsDiv = document.getElementById('itemsContainer');
+  const company = this.value;
+  const sectionSelect = document.getElementById('sectionSelect');
+  const sizeSelect = document.getElementById('sizeSelect');
+  const itemsDiv = document.getElementById('itemsContainer');
 
-    // إخفاء وتنظيف العناصر التابعة
-    sectionSelect.innerHTML = '<option value="">-- اختر القسم --</option>';
-    sizeSelect.innerHTML = '<option value="">-- اختر القطر --</option>';
-    itemsDiv.innerHTML = '';
-    document.getElementById('sectionContainer').style.display = 'none';
-    document.getElementById('sizeContainer').style.display = 'none';
+  sectionSelect.innerHTML = '<option value="">-- اختر القسم --</option>';
+  sizeSelect.innerHTML = '<option value="">-- اختر القطر --</option>';
+  itemsDiv.innerHTML = '';
+  document.getElementById('sectionContainer').style.display = 'none';
+  document.getElementById('sizeContainer').style.display = 'none';
 
-    const data = productData[company];
-    if (!data) return;
+  const data = productData[company];
+  if (!data) return;
 
-    // ملء قائمة الأقسام
-    for (const section in data) {
-        sectionSelect.innerHTML += `<option value="${section}">${section}</option>`;
-    }
-    document.getElementById('sectionContainer').style.display = 'block';
+  for (const section in data) {
+    sectionSelect.innerHTML += `<option value="${section}">${section}</option>`;
+  }
+  document.getElementById('sectionContainer').style.display = 'block';
 });
 
-// عند تغيير القسم
 document.getElementById('sectionSelect').addEventListener('change', function () {
-    const company = document.getElementById('companySelect').value;
-    const section = this.value;
-    const sizeSelect = document.getElementById('sizeSelect');
-    const itemsDiv = document.getElementById('itemsContainer');
-    itemsDiv.innerHTML = '';
-    
-    sizeSelect.innerHTML = '<option value="">-- اختر القطر --</option>';
-    document.getElementById('sizeContainer').style.display = 'none';
+  const company = document.getElementById('companySelect').value;
+  const section = this.value;
+  const sizeSelect = document.getElementById('sizeSelect');
+  const itemsDiv = document.getElementById('itemsContainer');
+  itemsDiv.innerHTML = '';
+  sizeSelect.innerHTML = '<option value="">-- اختر القطر --</option>';
+  document.getElementById('sizeContainer').style.display = 'none';
 
-    const sizes = productData[company][section];
-    if (!sizes || !section) return;
-    
-    // فحص ما إذا كان هناك مقاسات متعددة أم مقاس واحد "عام"
-    const sizeKeys = Object.keys(sizes);
-    
-    if (sizeKeys.length === 1 && sizeKeys[0] === "عام") {
-        // إذا كان "عام" هو الخيار الوحيد، لا تعرض قائمة الأقطار، اعرض المنتجات مباشرة
-        document.getElementById('sizeSelect').value = "عام"; // وضع القيمة الافتراضية
-        displayItems("عام"); // عرض المنتجات مباشرة
-        document.getElementById('sizeContainer').style.display = 'none';
-    } else if (sizeKeys.length > 0) {
-        // إذا كان هناك مقاسات فعلية، قم بملء القائمة وعرضها
-        for (const size of sizeKeys) {
-            sizeSelect.innerHTML += `<option value="${size}">${size}</option>`;
-        }
-        document.getElementById('sizeContainer').style.display = 'block';
-    }
+  const sizes = productData[company][section];
+  if (!sizes) return;
+
+  const sizeKeys = Object.keys(sizes);
+  if (sizeKeys.length === 1 && sizeKeys[0] === "عام") {
+    displayItems("عام");
+  } else {
+    sizeKeys.forEach(size => sizeSelect.innerHTML += `<option value="${size}">${size}</option>`);
+    document.getElementById('sizeContainer').style.display = 'block';
+  }
 });
 
-// عند تغيير القطر
 document.getElementById('sizeSelect').addEventListener('change', function () {
-    const size = this.value;
-    displayItems(size);
+  displayItems(this.value);
 });
 
-// وظيفة عرض المنتجات
 function displayItems(size) {
-    const company = document.getElementById('companySelect').value;
-    const section = document.getElementById('sectionSelect').value;
-    const itemsDiv = document.getElementById('itemsContainer');
-    itemsDiv.innerHTML = '';
+  const company = document.getElementById('companySelect').value;
+  const section = document.getElementById('sectionSelect').value;
+  const itemsDiv = document.getElementById('itemsContainer');
+  itemsDiv.innerHTML = '';
+  if (!size) return;
+  const items = productData[company][section][size];
+  if (!items) return;
 
-    if (!size) return;
-
-    const items = productData[company][section][size];
-    if (items) {
-        items.forEach(item => {
-            itemsDiv.innerHTML += `
-                <div class="product-item">
-                    <label>${item.name} – ${item.price} جنيه</label>
-                    <input type="number" min="0" class="qty-input" data-name="${item.name}" data-price="${item.price}" placeholder="الكمية" value="">
-                </div>
-            `;
-        });
-    }
+  items.forEach(item => {
+    itemsDiv.innerHTML += `
+      <div class="product-item">
+        <label>${item.name} – ${item.price} جنيه</label>
+        <input type="number" min="0" class="qty-input" data-name="${item.name}" data-price="${item.price}" placeholder="الكمية">
+      </div>
+    `;
+  });
 }
-
-
-// في ملف calculator-script.js
-
-
-
-
 
 function calculateTotal() {
-    let total = 0;
-    let message = "📝 طلب عرض أسعار مبدئي من حاسبة معرض الصعيدي:\n"; 
-    
-    const selectedCompany = document.getElementById('companySelect').value;
-    const selectedSection = document.getElementById('sectionSelect').value;
-    const selectedSize = document.getElementById('sizeSelect').value;
-    
-    // تنسيق بداية الرسالة
-    message += `**🏢 الشركة:** ${selectedCompany}\n`;
-    message += `**🏗️ القسم:** ${selectedSection}\n`;
-    if (selectedSize && selectedSize !== 'عام') message += `**📏 القطر/المقاس:** ${selectedSize}\n`;
-    message += "\n" + "**🛒 تفاصيل المنتجات:**\n";
-    
-    let itemsCount = 0;
-    const inputs = document.querySelectorAll('.qty-input');
-    
-    inputs.forEach(input => {
-        const qty = parseFloat(input.value);
-        const price = parseFloat(input.dataset.price);
-        const name = input.dataset.name;
-        if (!isNaN(qty) && qty > 0) {
-            const subtotal = qty * price;
-            total += subtotal;
-            itemsCount++;
-            
-            message += `\n* ${name} \n  (💰 السعر: ${price.toFixed(2)} | ✖️ الكمية المطلوبة: ${qty} | 💵 الإجمالي التقديري: ${subtotal.toFixed(2)} جنيه)`;
-        }
-    });
+  let total = 0;
+  let message = "📝 طلب عرض أسعار مبدئي من حاسبة معرض الصعيدي:\n";
+  const selectedCompany = document.getElementById('companySelect').value;
+  const selectedSection = document.getElementById('sectionSelect').value;
+  const selectedSize = document.getElementById('sizeSelect').value;
+  
+  message += `🏢 الشركة: ${selectedCompany}\n🏗️ القسم: ${selectedSection}\n`;
+  if (selectedSize && selectedSize !== 'عام') message += `📏 القطر/المقاس: ${selectedSize}\n`;
+  message += "\n🛒 تفاصيل المنتجات:\n";
 
-    if (itemsCount === 0) {
-        document.getElementById("totalResult").textContent = `الإجمالي: 0.00 جنيه`;
-        document.getElementById("whatsappRetail").style.display = 'none';
-        document.getElementById("whatsappWholesale").style.display = 'none';
-        document.getElementById("startNewOrder").style.display = 'none';
-        alert("الرجاء تحديد كمية لمنتج واحد على الأقل للمتابعة.");
-        return;
+  const inputs = document.querySelectorAll('.qty-input');
+  let itemsCount = 0;
+  inputs.forEach(input => {
+    const qty = parseFloat(input.value);
+    const price = parseFloat(input.dataset.price);
+    const name = input.dataset.name;
+    if (!isNaN(qty) && qty > 0) {
+      const subtotal = qty * price;
+      total += subtotal;
+      itemsCount++;
+      message += `\n• ${name} (💰 ${price} × ${qty}) = ${subtotal.toFixed(2)} جنيه`;
     }
+  });
 
-    // تنسيق نهاية الرسالة والحصرية (الاسم المطول)
-    message += "\n" + "---" + "\n";
-    message += `**💎 الإجمالي التقديري للطلب:** **${total.toFixed(2)} جنيه**\n`;
-    message += "---" + "\n";
-    message += "📍 هذا طلب عرض أسعار مبدئي، برجاء تأكيد الأسعار والخصومات المتاحة للكميات.\n"; 
-    // تأكيد الحصرية في نهاية الرسالة
-    message += "🌐 هذه الحاسبة مقدمة حصريًا من **معرض الصعيدي للأدوات الصحية مسجد الرحمن بشتيل إمبابه**."; 
-    
-    document.getElementById("totalResult").textContent = `الإجمالي التقديري: ${total.toFixed(2)} جنيه`;
+  if (itemsCount === 0) {
+    alert("الرجاء تحديد كمية لمنتج واحد على الأقل.");
+    return;
+  }
 
-    // تحديث روابط الواتساب بالرسالة الجديدة والارقام الثابتة
-    const encodedMessage = encodeURIComponent(message);
-    document.getElementById("whatsappRetail").href = `https://wa.me/${WHATSAPP_RETAIL}?text=${encodedMessage}`;
-    document.getElementById("whatsappWholesale").href = `https://wa.me/${WHATSAPP_WHOLESALE}?text=${encodedMessage}`;
+  message += "\n----------------------\n";
+  message += `💎 الإجمالي التقديري: ${total.toFixed(2)} جنيه\n`;
+  message += "----------------------\n";
+  message += "📍 هذا عرض أسعار مبدئي. برجاء تأكيد الأسعار قبل التنفيذ.\n";
+  message += "🌐 معرض الصعيدي للأدوات الصحية – مسجد الرحمن بشتيل إمبابة.\n";
 
-    document.getElementById("whatsappRetail").style.display = 'block';
-    document.getElementById("whatsappWholesale").style.display = 'block';
-    document.getElementById("startNewOrder").style.display = 'block';
+  document.getElementById("totalResult").textContent = `الإجمالي: ${total.toFixed(2)} جنيه`;
+  document.getElementById("viewInvoice").style.display = 'block';
+  document.getElementById("viewInvoice").onclick = () => showInvoice(message);
 }
 
-// --------------------------------------------------
-// 4. وظيفة startNewOrder() (تم تعديلها لحذف إشارة PDF)
-// --------------------------------------------------
+function showInvoice(message) {
+  const overlay = document.createElement("div");
+  overlay.className = "invoice-overlay";
+  const box = document.createElement("div");
+  box.className = "invoice-box";
+  box.innerHTML = `
+    <h2>🧾 فاتورة مبدئية</h2>
+    <pre class="invoice-content">${message}</pre>
+    <div class="invoice-buttons">
+      <a class="btn-whatsapp" href="https://wa.me/${WHATSAPP_RETAIL}?text=${encodeURIComponent(message)}" target="_blank">📲 إرسال للقطاعي</a>
+      <a class="btn-whatsapp" href="https://wa.me/${WHATSAPP_WHOLESALE}?text=${encodeURIComponent(message)}" target="_blank">📦 إرسال للجملة</a>
+      <button class="btn-close" onclick="this.closest('.invoice-overlay').remove()">❌ إغلاق</button>
+    </div>
+  `;
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+}
+
 function startNewOrder() {
-    // إعادة تعيين كل القوائم المنسدلة
-    document.getElementById('companySelect').value = "";
-    document.getElementById('sectionSelect').innerHTML = '<option value="">-- اختر القسم --</option>';
-    document.getElementById('sizeSelect').innerHTML = '<option value="">-- اختر القطر --</option>';
-    
-    // إخفاء الحاويات
-    document.getElementById('sectionContainer').style.display = 'none';
-    document.getElementById('sizeContainer').style.display = 'none';
-    
-    // مسح المنتجات والنتيجة
-    document.getElementById('itemsContainer').innerHTML = '';
-    document.getElementById("totalResult").textContent = `الإجمالي: 0.00 جنيه`;
-    
-    // إخفاء أزرار الإجراءات
-    document.getElementById("whatsappRetail").style.display = 'none';
-    document.getElementById("whatsappWholesale").style.display = 'none';
-    // تم إزالة السطر الخاص بإظهار/إخفاء زر الـ PDF لعدم وجوده
-    document.getElementById("startNewOrder").style.display = 'none';
-    
-    alert("تم إعادة تعيين الحاسبة. ابدأ في اختيار منتجات جديدة.");
+  document.getElementById('companySelect').value = "";
+  document.getElementById('sectionSelect').innerHTML = '<option value="">-- اختر القسم --</option>';
+  document.getElementById('sizeSelect').innerHTML = '<option value="">-- اختر القطر --</option>';
+  document.getElementById('itemsContainer').innerHTML = '';
+  document.getElementById('sectionContainer').style.display = 'none';
+  document.getElementById('sizeContainer').style.display = 'none';
+  document.getElementById('totalResult').textContent = 'الإجمالي: 0 جنيه';
+  document.getElementById('viewInvoice').style.display = 'none';
+  alert("تم البدء من جديد ✅");
 }
-
-// --------------------------------------------------
-// ** تم حذف وظيفة downloadPDF() بالكامل من الكود **
-// --------------------------------------------------
-
