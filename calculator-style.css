@@ -1,136 +1,282 @@
-body {
-  font-family: "Tajawal", sans-serif;
-  background: #f4f4f9;
-  color: #222;
-  padding: 15px;
-  direction: rtl;
-}
-
-.header {
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-.top-banner {
-  background: #007bff;
-  color: white;
-  padding: 8px;
-  text-align: center;
-  border-radius: 8px;
-  margin-bottom: 15px;
-}
-
-label {
-  display: block;
-  margin-top: 10px;
-  font-weight: bold;
-}
-
-select, input, button {
-  width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 15px;
-}
-
-button {
-  background: #28a745;
-  color: white;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-button:hover {
-  background: #218838;
-}
-
-.whatsapp-button {
-  background-color: #25D366;
-  color: white;
-  padding: 10px;
-  border-radius: 8px;
-  text-decoration: none;
-  display: inline-block;
-  margin-top: 5px;
-  font-weight: bold;
-}
-
-.dark-mode {
-  background-color: #111;
-  color: #f1f1f1;
-}
-
-/* نافذة عرض الفاتورة */
-.invoice-overlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.invoice-box {
-  background: #fff;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 500px;
-  padding: 20px;
-  text-align: right;
-  font-family: "Tajawal", sans-serif;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-  animation: fadeIn 0.3s ease;
-}
-
-.invoice-box h2 {
-  margin-top: 0;
-  text-align: center;
-}
-
-.invoice-content {
-  background: #f7f7f7;
-  border-radius: 8px;
-  padding: 10px;
-  white-space: pre-wrap;
-  max-height: 300px;
-  overflow-y: auto;
-  direction: rtl;
-}
-
-.invoice-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 15px;
-}
-
-.btn-whatsapp {
-  background: #25D366;
-  color: white;
-  text-decoration: none;
-  text-align: center;
-  padding: 10px;
-  border-radius: 8px;
-  font-weight: bold;
-}
-
-.btn-close {
-  background: #ff4d4d;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 10px;
-  cursor: pointer;
-  font-weight: bold;
+/* 1. الإعدادات العامة والأنيميشن */
+:root {
+    --primary: #004aad;     /* أزرق الهوية الملكي */
+    --secondary: #002d6b;   /* كحلي داكن */
+    --accent: #2ecc71;      /* أخضر النجاح */
+    --gold: #ffcc00;        /* ذهبي المعرض */
+    --bg-body: #f8fafc;     /* خلفية هادئة */
+    --text-dark: #1e293b;
+    --white: #ffffff;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.1);
+    --glass: rgba(255, 255, 255, 0.95);
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+body {
+    font-family: 'Tajawal', sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-dark);
+    margin: 0; padding: 0;
+    direction: rtl;
+    -webkit-tap-highlight-color: transparent; /* منع اللون الأزرق عند الضغط في الموبايل */
+}
+
+/* تخصيص شريط التمرير */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+/* 2. الهيدر (تأثير متدرج ملكي) */
+.main-header {
+    background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+    color: white;
+    padding: 30px 20px 80px;
+    text-align: center;
+    border-radius: 0 0 50px 50px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 74, 173, 0.2);
+}
+
+.logo-wrapper { margin-bottom: 15px; }
+.main-logo {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    border: 4px solid var(--gold);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.main-logo:hover { transform: rotate(10deg) scale(1.1); }
+
+/* 3. البحث الطائر (Floating Search) */
+.search-box {
+    margin: -40px auto 25px;
+    width: 90%;
+    max-width: 550px;
+    position: relative;
+    z-index: 100;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 20px 55px 20px 25px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.3);
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-md);
+    font-size: 16px;
+    font-family: inherit;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+#searchInput:focus {
+    box-shadow: 0 15px 35px rgba(0, 74, 173, 0.2);
+    transform: translateY(-3px);
+    border-color: var(--primary);
+}
+
+/* 4. كروت الشركات (Grid Layout) */
+.brands-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    padding: 0 20px;
+    margin-bottom: 25px;
+}
+
+.brand-card {
+    background: white;
+    padding: 20px;
+    border-radius: 25px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.brand-card.active {
+    background: #f0f7ff;
+    border-color: var(--primary);
+    transform: scale(0.98);
+}
+
+.brand-card h3 { font-size: 14px; margin: 10px 0 5px; color: var(--secondary); }
+
+/* 5. التبويبات والمقاسات (Scrollable Tabs) */
+.tabs-container, .chips-container {
+    display: flex; gap: 10px;
+    overflow-x: auto;
+    padding: 10px 20px;
+    scrollbar-width: none;
+}
+.tabs-container::-webkit-scrollbar { display: none; }
+
+.tab-btn {
+    background: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 15px;
+    white-space: nowrap;
+    font-weight: bold;
+    color: var(--secondary);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+}
+
+.tab-btn.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 5px 15px rgba(0, 74, 173, 0.3);
+}
+
+/* 6. قائمة المنتجات الاحترافية */
+.products-grid {
+    padding: 10px 20px 180px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.product-item {
+    background: white;
+    padding: 15px;
+    border-radius: 18px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    animation: fadeIn 0.4s ease forwards;
+    border: 1px solid #f1f5f9;
+}
+
+.item-details { flex: 2; }
+.product-name {
+    font-weight: 800;
+    font-size: 15px;
+    color: #334155;
+    margin-bottom: 4px;
+    display: block;
+}
+.product-info-small { font-size: 12px; color: #94a3b8; }
+
+.item-action {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.product-price-tag {
+    font-weight: 900;
+    color: var(--primary);
+    background: #f0f4ff;
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.qty-input {
+    width: 60px;
+    height: 45px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--secondary);
+    transition: 0.2s;
+}
+
+.qty-input:focus {
+    border-color: var(--accent);
+    background: #fafffa;
+    outline: none;
+}
+
+/* 7. الفوتر الذكي (Floating Summary) */
+.footer-summary {
+    position: fixed;
+    bottom: 20px;
+    left: 5%;
+    right: 5%;
+    width: 90%;
+    background: var(--glass);
+    backdrop-filter: blur(15px);
+    padding: 15px 25px;
+    border-radius: 30px;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.5);
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+.total-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.price-val {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--secondary);
+}
+
+.action-btns { display: flex; gap: 12px; }
+.btn-calc {
+    flex: 3;
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 16px;
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+    cursor: pointer;
+}
+
+.btn-reset {
+    flex: 1;
+    background: #fee2e2;
+    color: #ef4444;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+/* 8. المودال (معاينة الفاتورة) */
+#previewModal {
+    backdrop-filter: blur(8px);
+}
+.modal-content {
+    background: white;
+    width: 90%;
+    max-width: 450px;
+    border-radius: 35px;
+    padding: 30px;
+    position: relative;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+}
+
+/* للموبايلات الصغيرة جداً */
+@media (max-width: 480px) {
+    .brands-grid { grid-template-columns: 1fr; }
+    .main-header { padding-bottom: 70px; }
+    .price-val { font-size: 24px; }
+}
+
+/* تمييز نتائج البحث */
+.product-item mark {
+    background: var(--gold);
+    color: black;
+    padding: 0 2px;
+    border-radius: 4px;
 }
