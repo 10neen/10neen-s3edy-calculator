@@ -280,3 +280,26 @@ body {
     padding: 0 2px;
     border-radius: 4px;
 }
+
+.discount-notice {
+    background: #fff9db; /* لون أصفر هادي */
+    border-right: 5px solid #facc15; /* خط جانبي بلون شعار الصعيدي */
+    margin: 15px;
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.95rem;
+    color: #333;
+    line-height: 1.6;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.notice-icon {
+    font-size: 1.8rem;
+}
+
+.notice-text b {
+    color: #d9534f; /* لون أحمر خفيف لكلمة تنبيه */
+}
