@@ -138,11 +138,14 @@ body {
 }
 
 /* 6. قائمة المنتجات الاحترافية */
+
+/* 6. قائمة المنتجات - تعديل المساحات */
 .products-grid {
-    padding: 10px 20px 180px;
+    padding: 10px 20px 40px;
     max-width: 700px;
     margin: 0 auto;
 }
+
 
 .product-item {
     background: white;
@@ -200,22 +203,23 @@ body {
     outline: none;
 }
 
-/* 7. الفوتر الذكي (Floating Summary) */
+
+/* 7. الفوتر الذكي (تعديل لعدم تغطية المنتجات) */
 .footer-summary {
-    position: fixed;
-    bottom: 20px;
-    left: 5%;
-    right: 5%;
+    position: relative;
+    margin: 20px auto; /* توسيط الفوتر */
     width: 90%;
     background: var(--glass);
     backdrop-filter: blur(15px);
     padding: 15px 25px;
     border-radius: 30px;
-    box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
     border: 1px solid rgba(255,255,255,0.5);
     z-index: 1000;
     box-sizing: border-box;
 }
+
+
 
 .total-info {
     display: flex;
@@ -301,5 +305,25 @@ body {
 }
 
 .notice-text b {
-    color: #d9534f; /* لون أحمر خفيف لكلمة تنبيه */
+    color: #d9534f;
+}
+
+.best-value {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    white-space: nowrap;
+}
+
+/* تعديل بسيط للكارت عشان الـ Badge يظهر فوقه صح */
+.brand-card {
+    position: relative; 
 }
