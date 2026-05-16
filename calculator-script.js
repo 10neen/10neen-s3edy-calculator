@@ -74,7 +74,6 @@ function selectCompany(co, el) {
               { name: "بيلسا ثيرم", key: "belissa", sub: "THERM" },
               { name: "بيلسا وايت", key: "pilsa_white", sub: "WHITE" },
               { name: "أكوا نايل", key: "aqua_nil", sub: "GAWAN" }
-
         ];
         brands.forEach(brand => {
             const btn = document.createElement('button');
@@ -152,9 +151,6 @@ function renderItems(items, isSearch = false) {
     `).join('');
 }
 
-// 6. محرك البحث الذكي (فلترة فورية وشاملة)
-
-
 // 6. محرك البحث الذكي المطور (يدعم الأرقام المتصلة واختلاف المسافات)
 function filterProducts() {
     const input = document.getElementById('searchInput').value.trim().toLowerCase();
@@ -165,8 +161,7 @@ function filterProducts() {
         return;
     }
 
-    // "اللمسة الذكية": تقسيم نص البحث إلى كلمات مستقلة
-    // مثلاً "كوع3/4" تتحول إلى ["كوع", "3/4"] باستخدام Regex
+    // تقسيم نص البحث إلى كلمات مستقلة لدعم اختلاف كتابة المسافات
     const searchTerms = input.split(/(\d+\/\d+|\d+|\s+)/).filter(t => t.trim().length > 0);
 
     const results = allProductsFlat.filter(product => {
@@ -187,9 +182,6 @@ function filterProducts() {
         renderItems(results.slice(0, 50), true); 
     }
 }
-
-
-
 
 // 7. الحسابات والواتساب
 function updateLiveTotal() {
@@ -221,14 +213,14 @@ function calculateTotal() {
             const sub = q * price;
             total += sub;
 
-            // بناء المعاينة المرئية
+            // بناء المعاينة المرئية داخل التطبيق
             itemsHtml += `
                 <div style="display:flex; justify-content:space-between; margin-bottom:8px; border-bottom:1px solid #eee; padding-bottom:5px; font-size:14px;">
                     <span>${i.dataset.name} <br> <small>(عدد ${q} × ${price})</small></span>
                     <b style="color:#003366;">${sub.toLocaleString()} ج</b>
                 </div>`;
 
-            // بناء رسالة الواتساب
+            // بناء رسالة الواتساب الصادرة
             whatsappMsg += `🔹 *${i.dataset.name}*\n   الكمية: ${q} × ${price} = *${sub.toLocaleString()} ج.م*\n`;
         }
     });
@@ -249,7 +241,7 @@ function calculateTotal() {
 
 // 8. وظائف مساعدة
 function sendToWhatsApp() {
-    const phone = "201122019099"; // رقم المعرض
+    const phone = "201122019099"; // رقم المعرض الأساسي
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(window.currentWhatsappMsg)}`);
 }
 
@@ -257,13 +249,22 @@ function closePreview() {
     document.getElementById('previewModal').style.display = 'none'; 
 }
 
+// تصفير ذكي وسريع للأجهزة الضعيفة بدون إعادة تحميل الصفحة بالكامل
 function startNewOrder() { 
     if(confirm("هل تريد مسح البيانات وبدء طلب جديد؟")) {
-        location.reload(); 
+        document.querySelectorAll('.qty-input').forEach(i => i.value = '');
+        document.getElementById('totalResult').innerText = '0';
+        const container = document.getElementById('itemsContainer');
+        if(!currentSub) container.innerHTML = '';
+        else if(productData[currentCo] && productData[currentCo][currentSub] && currentSz) {
+            renderItems(productData[currentCo][currentSub][currentSz]);
+        }
+        document.getElementById('searchInput').value = '';
+        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 }
 
-// تشغيل النظام عند التحميل
+// تشغيل النظام وتجهيز الكاش الشامل عند الفتح فوراً
 window.onload = () => { 
     updateClock(); 
     prepareSearchData(); 
