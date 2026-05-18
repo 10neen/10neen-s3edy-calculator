@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>حاسبة معرض الصعيدي | الإصدار المطور</title>
+    
+    <link rel="icon" type="image/PNG" href="saidi-logo.PNG">
+    <link rel="stylesheet" href="calculator-style.css?v=2.1">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="manifest" href="manifest.json">
+    <style>
+        /* إضافة ستايل سريع لتحسين شكل الأزرار */
+        .brand-card {
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 2px solid transparent;
+        }
+        .brand-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .brand-card.active {
+            border-color: #007bff;
+            background-color: #f0f7ff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-banner">
+    🏪 معرض الصعيدي للأدوات الصحية – مسجد الرحمن (بشتيل - إمبابة)
+</div>
+
+<header class="main-header">
+    <div class="logo-wrapper">
+        <img src="saidi-logo.PNG" alt="لوجو معرض الصعيدي" class="main-logo">
+    </div>
+
+    <h1>معرض الصعيدي للأدوات الصحية</h1>
+    <span class="brand-subtitle">مسجد الرحمن - بشتيل - إمبابة</span>
+    <span class="brand-management">إدارة: حسن العدوي (01122019099) & أحمد إدريس (01129777012)</span>
+    
+    <div id="clockContainer" class="clock-mini">
+        <span id="hijriDate"></span> | <span id="arabicTime"></span>
+    </div>
+</header>
+
+<main class="main-content">
+
+<div class="discount-notice">
+    <div class="notice-icon">💡</div>
+    <div class="notice-text">
+        <strong>تنبيه هام:</strong> هذه الأسعار هي <b>"أسعار اللستة الرسمية"</b>. استمتع بخصمك الخاص عند التواصل معنا!
+    </div>
+</div>
+
+<section class="brands-section">
+    <div class="brand-selection-container">
+        <h3 class="selection-title">إبدأ باختيار الشركة:</h3>
+        
+        <div class="brand-grid"> <div class="brand-card egic-card" onclick="selectCompany('egic', this)">
+                <div class="card-header">EG</div>
+                <div class="card-body">
+                    <h4>المصرية الألمانية إيجيك</h4>
+                    <p>لتسعير بي آر، سمارت، وكيسيل</p>
+                    <span class="action-btn">اضغط هنا للتسعير</span>
+                </div>
+            </div>
+
+            <div class="brand-card belissa-card" onclick="selectCompany('belissa_group', this)">
+                <div class="badge">الأكثر توفيراً</div>
+                <div class="card-header">P</div>
+                <div class="card-body">
+                    <h4>مجموعة بيلسا الاقتصادية</h4>
+                    <p>لتسعير بيلسا ثيرم، وايت، وأكوا نيل</p>
+                    <span class="action-btn">اضغط هنا للتسعير</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+    <div id="subSectionsContainer" class="tabs-container"></div>
+    <div id="sizesContainer" class="chips-container"></div>
+    <div id="itemsContainer" class="products-grid"></div>
+
+</main>
+
+<div class="footer-summary">
+    <div class="total-info">
+        <span class="label">الإجمالي التقديري:</span>
+        <span id="totalResult" class="price-val">0</span> <small>ج.م</small>
+    </div>
+    <div class="action-btns">
+        <button class="btn-calc" onclick="calculateTotal()">✅ استخراج الفاتورة</button>
+        <button class="btn-reset" onclick="startNewOrder()">🔄 جديد</button>
+    </div>
+</div>
+
+<div id="previewModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; justify-content:center; align-items:center;">
+    <div style="background:white; width:90%; max-width:400px; border-radius:20px; padding:20px; max-height:80vh; overflow-y:auto;">
+        <h2 style="text-align:center; color:var(--primary);">📋 معاينة الطلب</h2>
+        <div id="previewContent" style="margin-bottom:20px; border-top:1px solid #eee; padding-top:10px;"></div>
+        <div style="display:flex; gap:10px;">
+            <button onclick="closePreview()" style="flex:1; padding:12px; border:none; border-radius:10px; background:#666; color:white;">إغلاق</button>
+            <button onclick="sendToWhatsApp()" style="flex:2; padding:12px; border:none; border-radius:10px; background:var(--accent); color:white; font-weight:bold;">إرسال واتساب 📱</button>
+        </div>
+    </div>
+</div>
+
+<script src="productData.js?v=2.1"></script>
+<script src="calculator-script.js?v=2.1"></script>
+
+<script>
+    // دالة جديدة للتحكم في اختيار الشركة وإظهار الأقسام بسلاسة
+    function handleCompanySelection(companyId, element) {
+        // إزالة التحديد من باقي الكروت
+        document.querySelectorAll('.brand-card').forEach(card => card.classList.remove('active'));
+        // إضافة تحديد للكارت المختار
+        element.classList.add('active');
+        
+        // استدعاء الدالة الأصلية في ملف السكريبت بتاعك
+        if (typeof selectCompany === "function") {
+            selectCompany(companyId, element);
+        }
+        
+        // تمرير الصفحة للأسفل قليلاً ليظهر القسم الجديد
+        window.scrollBy({ top: 300, behavior: 'smooth' });
+    }
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Error:', err));
+        });
+    }
+</script>
+
+</body>
+</html>
