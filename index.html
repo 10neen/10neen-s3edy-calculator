@@ -3,27 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>حاسبة معرض الصعيدي | الإصدار المطور</title>
+    <title>حاسبة معرض الصعيدي | المصرية الألمانية (إيجيك)</title>
     
     <link rel="icon" type="image/PNG" href="saidi-logo.PNG">
-    <link rel="stylesheet" href="calculator-style.css?v=2.1">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="calculator-style.css?v=3.1">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
     
     <link rel="manifest" href="manifest.json">
     <style>
-        /* إضافة ستايل سريع لتحسين شكل الأزرار */
-        .brand-card {
+        /* أنماط سريعة ومكملة للتنسيق الرئيسي */
+        .search-section {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 16px;
+            margin: 15px 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            border: 1px solid #e2e8f0;
+        }
+        .search-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 10px;
+        }
+        .btn-change-company {
+            background: #f1f5f9;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 800;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            border: 2px solid transparent;
+            transition: all 0.2s ease;
         }
-        .brand-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        .brand-card.active {
-            border-color: #007bff;
-            background-color: #f0f7ff;
+        .btn-change-company:active {
+            background: #e2e8f0;
+            transform: scale(0.96);
         }
     </style>
 </head>
@@ -42,58 +59,98 @@
     <span class="brand-subtitle">مسجد الرحمن - بشتيل - إمبابة</span>
     <span class="brand-management">إدارة: حسن العدوي (01122019099) & أحمد إدريس (01129777012)</span>
     
-    <div id="clockContainer" class="clock-mini">
-        <span id="hijriDate"></span> | <span id="arabicTime"></span>
-    </div>
+
+<!-- شريط التاريخ والوقت الإلكتروني المنسق -->
+<div id="clockContainer" style="background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; padding: 10px 15px; border-radius: 12px; margin: 12px auto 0; max-width: 90%; text-align: center; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);">
+    <span id="arabicTime" style="display: block; font-size: 16px; font-weight: 900; color: #4ade80; margin-bottom: 4px; text-shadow: 0 0 8px rgba(74,222,128,0.3);"></span>
+    <span id="hijriDate" style="display: block; font-size: 13px; font-weight: 700; color: #cbd5e1; direction: rtl;"></span>
+</div>
+
+
+
 </header>
 
 <main class="main-content">
 
-<div class="discount-notice">
-    <div class="notice-icon">💡</div>
-    <div class="notice-text">
-        <strong>تنبيه هام:</strong> هذه الأسعار هي <b>"أسعار اللستة الرسمية"</b>. استمتع بخصمك الخاص عند التواصل معنا!
-    </div>
+<div class="discount-notice" style="margin: 12px 14px 4px; background: #fffbeb; border: 1px solid #fef3c7; padding: 10px; border-radius: 12px; text-align: center; font-size: 13px;">
+    <strong>💡 تنبيه هام:</strong> الأسعار المعروضة هي <b>"أسعار اللستة الرسمية"</b>. التواصل معنا للحصول على الخصم الفوري!
 </div>
 
-<section class="brands-section">
+<!-- قسم اختيار شركة إيجيك الموحد -->
+<section id="brandsSection" class="brands-section">
     <div class="brand-selection-container">
-        <h3 class="selection-title">إبدأ باختيار الشركة:</h3>
+        <h3 class="selection-title">الشركة المعتمدة للتسعير</h3>
         
-        <div class="brand-grid"> <div class="brand-card egic-card" onclick="selectCompany('egic', this)">
-                <div class="card-header">EG</div>
+        <div class="brand-grid">
+            <div class="custom-brand-card egic-card active" onclick="selectCompany('egic')">
+                <span class="badge">الاعتماد الموحد</span>
+                <div class="card-header">EGIC</div>
                 <div class="card-body">
-                    <h4>المصرية الألمانية إيجيك</h4>
-                    <p>لتسعير بي آر، سمارت، وكيسيل</p>
-                    <span class="action-btn">اضغط هنا للتسعير</span>
-                </div>
-            </div>
-
-            <div class="brand-card belissa-card" onclick="selectCompany('belissa_group', this)">
-                <div class="badge">الأكثر توفيراً</div>
-                <div class="card-header">P</div>
-                <div class="card-body">
-                    <h4>مجموعة بيلسا الاقتصادية</h4>
-                    <p>لتسعير بيلسا ثيرم، وايت، وأكوا نيل</p>
-                    <span class="action-btn">اضغط هنا للتسعير</span>
+                    <h4>المصرية الألمانية لمواد التغذية والصرف</h4>
+                    <p>جميع قطاعات وأنظمة الشركة (باننجر BR - كاسيل - سمارت)</p>
+                    <span class="action-btn" style="display:inline-block; margin-top:8px; font-weight:800; color:var(--primary); font-size:13px;">👈 اضغط لبدء تسعير إيجيك</span>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
+<!-- قسم الإدخال السريع (البحث + الكمية + الإضافة) -->
+<section id="searchSection" class="search-section" style="display: none;">
+    <div class="search-top-bar">
+        <h3 id="selectedCompanyTitle" style="margin:0; font-size:15px; font-weight:800; color:#0f172a;"></h3>
+        <button class="btn-change-company" onclick="resetCompanySelection()">🔄 إعادة العرض</button>
+    </div>
+    
+    <!-- حارة الإدخال الموحدة -->
+    <div class="input-action-row" style="display: flex; gap: 8px; align-items: center; position: relative;">
+        <!-- حقل البحث -->
+        <div class="search-box-wrapper" style="flex: 1; position: relative;">
+            <input 
+                type="text" 
+                id="productSearchInput" 
+                class="search-input" 
+                placeholder="🔍 البحث عن صنف..." 
+                autocomplete="off"
+            >
+            <ul id="searchResultsDropdown" class="search-dropdown"></ul>
+        </div>
 
+        <!-- خانة الكمية -->
+        <input 
+            type="number" 
+            id="quickQtyInput" 
+            placeholder="الكمية" 
+            value="1" 
+            min="1"
+            style="width: 80px; padding: 12px; border: 2px solid #0284c7; border-radius: 10px; font-weight: bold; text-align: center; font-size: 15px; outline: none;"
+            onkeydown="if(event.key === 'Enter') addSelectedItemToBill()"
+        >
 
-    <div id="subSectionsContainer" class="tabs-container"></div>
-    <div id="sizesContainer" class="chips-container"></div>
-    <div id="itemsContainer" class="products-grid"></div>
+        <!-- زر الإضافة -->
+        <button 
+            type="button" 
+            onclick="addSelectedItemToBill()"
+            style="background: #0284c7; color: white; border: none; padding: 12px 16px; border-radius: 10px; font-weight: bold; font-family: 'Tajawal', sans-serif; cursor: pointer; white-space: nowrap;"
+        >
+            ➕ إضافة
+        </button>
+    </div>
+</section>
+
+<div id="subSectionsContainer" class="tabs-container"></div>
+<div id="sizesContainer" class="chips-container"></div>
+<div id="itemsContainer" class="products-grid"></div>
 
 </main>
 
+<!-- الفوتر العائم والتسعير -->
 <div class="footer-summary">
     <div class="total-info">
-        <span class="label">الإجمالي التقديري:</span>
-        <span id="totalResult" class="price-val">0</span> <small>ج.م</small>
+        <span class="total-label">الإجمالي التقديري:</span>
+        <div>
+            <span id="totalResult" class="price-val">0</span> <small style="font-weight:bold; color:var(--primary);">ج.م</small>
+        </div>
     </div>
     <div class="action-btns">
         <button class="btn-calc" onclick="calculateTotal()">✅ استخراج الفاتورة</button>
@@ -101,43 +158,45 @@
     </div>
 </div>
 
-<div id="previewModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; justify-content:center; align-items:center;">
-    <div style="background:white; width:90%; max-width:400px; border-radius:20px; padding:20px; max-height:80vh; overflow-y:auto;">
-        <h2 style="text-align:center; color:var(--primary);">📋 معاينة الطلب</h2>
-        <div id="previewContent" style="margin-bottom:20px; border-top:1px solid #eee; padding-top:10px;"></div>
+<!-- نافذة المعاينة والواتساب -->
+<div id="previewModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.8); z-index:2000; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
+    <div style="background:white; width:90%; max-width:420px; border-radius:24px; padding:22px; max-height:85vh; overflow-y:auto; box-shadow:0 20px 40px rgba(0,0,0,0.3);">
+        <h2 style="text-align:center; color:var(--primary); font-size:18px; margin-bottom:12px;">📋 معاينة فاتورة إيجيك</h2>
+        <div id="previewContent" style="margin-bottom:20px; border-top:1px solid #f1f5f9; padding-top:12px;"></div>
         <div style="display:flex; gap:10px;">
-            <button onclick="closePreview()" style="flex:1; padding:12px; border:none; border-radius:10px; background:#666; color:white;">إغلاق</button>
-            <button onclick="sendToWhatsApp()" style="flex:2; padding:12px; border:none; border-radius:10px; background:var(--accent); color:white; font-weight:bold;">إرسال واتساب 📱</button>
+            <button onclick="closePreview()" style="flex:1; padding:13px; border:none; border-radius:12px; background:#f1f5f9; color:#475569; font-weight:800; cursor:pointer;">إغلاق</button>
+            <button onclick="sendToWhatsApp()" style="flex:2; padding:13px; border:none; border-radius:12px; background:var(--accent); color:white; font-weight:bold; cursor:pointer;">إرسال للعميل 📱</button>
         </div>
     </div>
 </div>
 
-<script src="productData.js?v=2.1"></script>
-<script src="calculator-script.js?v=2.1"></script>
+<script src="productData.js?v=3.1"></script>
+<script src="calculator-script.js?v=3.1"></script>
 
 <script>
-    // دالة جديدة للتحكم في اختيار الشركة وإظهار الأقسام بسلاسة
-    function handleCompanySelection(companyId, element) {
-        // إزالة التحديد من باقي الكروت
-        document.querySelectorAll('.brand-card').forEach(card => card.classList.remove('active'));
-        // إضافة تحديد للكارت المختار
-        element.classList.add('active');
-        
-        // استدعاء الدالة الأصلية في ملف السكريبت بتاعك
-        if (typeof selectCompany === "function") {
-            selectCompany(companyId, element);
-        }
-        
-        // تمرير الصفحة للأسفل قليلاً ليظهر القسم الجديد
-        window.scrollBy({ top: 300, behavior: 'smooth' });
-    }
-
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Error:', err));
         });
     }
 </script>
+
+
+<!-- فوتر الإهداء الأصيل (أسفل الصفحة لراحة شاشات الموبايل) -->
+<footer style="background: linear-gradient(135deg, #0f172a, #1e293b); color: #fff; padding: 18px 12px; margin: 30px 12px 20px; border-radius: 16px; text-align: center; box-shadow: 0 -4px 15px rgba(0,0,0,0.1); border: 1px solid #334155;">
+    <h3 style="margin: 0 0 6px 0; font-size: 15px; color: #38bdf8;">✨ إهداء من معرض الصعيدي للأدوات الصحية ✨</h3>
+    <p style="margin: 0 0 4px 0; font-size: 13px; color: #e2e8f0;">
+        📍 بشتيل - بجوار سنترال بشتيل (إمبابة والوراق)
+    </p>
+    <p style="margin: 0 0 8px 0; font-size: 13px; color: #cbd5e1;">
+        👨‍🔧 <strong>حسن العدوي:</strong> 01122019099 | 👨‍🔧 <strong>أحمد إدريس:</strong> 01129777012
+    </p>
+    <div style="font-size: 12px; color: #94a3b8; border-top: 1px dashed #475569; padding-top: 6px; margin-top: 6px;">
+        هدية لكل مهندس وتاجر وصنايعي محترم في مصر أم الدنيا ❤️
+    </div>
+</footer>
+
+
 
 </body>
 </html>
