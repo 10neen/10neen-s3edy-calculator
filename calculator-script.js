@@ -67,8 +67,6 @@ function normalizeText(text) {
         .trim();
 }
 
-
-
 // تحديث الوقت والتاريخ بشكل احترافي ومنسق
 function updateClock() {
     const now = new Date();
@@ -108,7 +106,6 @@ function updateClock() {
 
 setInterval(updateClock, 1000);
 updateClock();
-
 
 const brandDisplayNames = {
     "BR": "إيجيك BR (تغذية بولي)",
@@ -150,7 +147,6 @@ function selectCompany(co, el) {
                     items.forEach(item => {
                         const fullNameRaw = `${item.name} ${brandReadable}`;
                         
-                        // توليد كلمات مفتاحية إضافية للأصناف التي لا تحتوي اسم البراند صراحة
                         let extraKeywords = "";
                         if (item.name.includes("مشترك") || categoryOrSize.includes("مشترك")) {
                             extraKeywords += " تي تيه ";
@@ -199,7 +195,7 @@ function resetCompanySelection() {
 let selectedTempProduct = null;
 
 // ==========================================
-// 3. محرك البحث التراكمي المطور (Prefix & Priority Search)
+// 3. محرك البحث التراكمي المطور (عرض أفقي وواسع ومريح للموبايل)
 // ==========================================
 function setupLiveSearch() {
     const input = document.getElementById('productSearchInput');
@@ -217,11 +213,9 @@ function setupLiveSearch() {
             return;
         }
 
-        // تنظيف النص وتفكيكه
         let normalizedQuery = normalizeText(rawQuery);
         const searchTokens = normalizedQuery.split(/\s+/).filter(t => t.length > 0);
 
-        // تصفية المنتجات تراكمياً
         let matches = currentCompanyProducts.filter(product => {
             return searchTokens.every(token => {
                 const synonym = SYNONYMS[token] ? normalizeText(SYNONYMS[token]) : "";
@@ -230,7 +224,6 @@ function setupLiveSearch() {
             });
         });
 
-        // ترتيب النتائج لتظهر الكلمات التي تبدأ بالحرف المدخل أولاً
         const firstToken = searchTokens[0];
         matches.sort((a, b) => {
             const aStartsWith = normalizeText(a.shortName).startsWith(firstToken);
@@ -241,17 +234,15 @@ function setupLiveSearch() {
             return 0;
         });
 
-        // عرض القائمة المنسدلة
         if (matches.length > 0) {
             matches.slice(0, 15).forEach((item) => {
                 const li = document.createElement('li');
-                li.style.cssText = "padding:10px; border-bottom:1px solid #f1f5f9; cursor:pointer; display:flex; justify-content:space-between; align-items:center;";
+                li.style.cssText = "padding: 12px 14px; border-bottom: 1px solid #f1f5f9; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: 'Tajawal', sans-serif;";
+                
+                // عرض أفقي منسق وواضح (الاسم والمقاس والسعر ببارز شيك)
                 li.innerHTML = `
-                    <div>
-                        <strong style="display:block; color:#0f172a;">${item.shortName}</strong>
-                        <small style="color:#64748b;">${item.brand} | ${item.size}</small>
-                    </div>
-                    <span style="font-weight:bold; color:#0052cc;">${item.price} ج</span>
+                    <span style="font-weight: 800; color: #0f172a; font-size: 15px;">${item.shortName} <span style="color: #0284c7; font-size: 13px; font-weight: 700;">(${item.size})</span></span>
+                    <span style="font-weight: bold; color: #0284c7; background: #e0f2fe; padding: 4px 10px; border-radius: 8px; font-size: 13px; white-space: nowrap;">${item.price} ج</span>
                 `;
                 
                 li.onclick = () => {
@@ -262,12 +253,11 @@ function setupLiveSearch() {
             });
             dropdown.style.display = 'block';
         } else {
-            dropdown.innerHTML = `<li style="padding:10px; text-align:center; color:#94a3b8;">لا يوجد صنف مطابق</li>`;
+            dropdown.innerHTML = `<li style="padding: 12px; text-align: center; color: #94a3b8; font-family: 'Tajawal', sans-serif;">لا يوجد صنف مطابق</li>`;
             dropdown.style.display = 'block';
         }
     });
 
-    // اختيار أول صنف عند الضغط على Enter في مربع البحث
     input.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -286,7 +276,7 @@ function setupLiveSearch() {
 }
 
 // ==========================================
-// 4. إدارة الفاتورة والإضافة
+// 4. إدارة الفاتورة والإضافة (كروت نظيفة وبدون تفاصيل معقدة)
 // ==========================================
 function selectProductToRow(item) {
     selectedTempProduct = item;
@@ -326,25 +316,26 @@ function addSelectedItemToBill() {
         itemCard.className = 'product-item';
         itemCard.id = `card_${item.id}`;
         
+        // كارت نظيف بدون تفاصيل تنظيمية طويلة ومزعجة
         itemCard.innerHTML = `
-            <div class="product-details">
-                <div class="product-name">${item.shortName}</div>
-                <div style="font-size:12px; color:#64748b;">${item.brand} - ${item.size}</div>
+            <div class="product-details" style="flex: 1;">
+                <div class="product-name" style="font-weight: 800; color: #0f172a; font-size: 15px;">${item.shortName}</div>
+                <div style="font-size: 13px; color: #0284c7; font-weight: 700; margin-top: 2px;">المقاس: ${item.size}</div>
             </div>
             
-            <div style="display:flex; align-items:center; gap:10px;">
-                <span class="product-price-tag">${item.price} ج</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="product-price-tag" style="font-weight: bold; color: #0f172a; font-size: 14px;">${item.price} ج</span>
                 <input type="number" 
                        id="qty_${item.id}"
                        class="qty-input"
-                       data-name="${item.shortName} (${item.size} - ${item.brand})" 
+                       data-name="${item.shortName} (${item.size})" 
                        data-price="${item.price}" 
                        value="${qtyVal}"
                        min="1"
-                       style="width:60px; text-align:center;"
+                       style="width: 60px; text-align: center; padding: 8px; border: 1px solid #cbd5e1; border-radius: 8px; font-weight: bold;"
                        oninput="updateLiveTotal()"
                        onkeydown="handleQtyEnter(event)">
-                <button onclick="removeItemCard('card_${item.id}')" style="background:none; border:none; color:#ef4444; font-size:18px; cursor:pointer;">✕</button>
+                <button onclick="removeItemCard('card_${item.id}')" style="background: none; border: none; color: #ef4444; font-size: 18px; cursor: pointer; padding: 4px;">✕</button>
             </div>
         `;
         container.prepend(itemCard);
