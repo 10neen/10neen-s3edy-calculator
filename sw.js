@@ -1,4 +1,4 @@
-const CACHE_NAME = 'saidi-calc-v2.2';
+const CACHE_NAME = 'saidi-calc-v3';
 const ASSETS = [
   './',
   './index.html',
