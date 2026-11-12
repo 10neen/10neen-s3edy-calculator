@@ -54,7 +54,7 @@ const SYNONYMS = {
     "45": "45 درجة 45درجة"
 };
 
-// دالة تنظيف وتوحيد النصوص لضمان مطابقة التنوين وكلمة "درجة"
+// دالة تنظيف وتوحيد النصوص لضمان مطابقة التنوين وكلمة "درجة" والهاء والتاء
 function normalizeText(text) {
     if (!text) return "";
     return text
@@ -78,26 +78,23 @@ function updateClock() {
     // التاريخ الميلادي (مثال: 7/9/2026)
     const gregorian = now.toLocaleDateString('ar-EG', { year: 'numeric', month: 'numeric', day: 'numeric' });
     
-    // التاريخ الهجري (مثال: 26 ربيع الأول 1448 هـ)
+    // التاريخ الهجري
     const hijri = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
         day: 'numeric', 
         month: 'long', 
         year: 'numeric'
     }).format(now);
     
-    // الوقت (مثال: 07:49:46 م)
+    // الوقت
     const timeString = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-    // تجميع النصوص بالترتيب المطلوب
     const fullDateText = `📅 اليوم: ${dayName} | 📆 ميلادي: ${gregorian} | 🌙 هجري: ${hijri} هـ`;
     
-    // ضخ الوقت في المنتصف بلون أخضر فسفوري هادئ ومريح للعين
     const timeEl = document.getElementById('arabicTime');
     if(timeEl) {
         timeEl.innerHTML = `⏰ ${timeString}`;
     }
     
-    // ضخ التاريخ الكامل في الأسفل
     const hijriEl = document.getElementById('hijriDate');
     if(hijriEl) {
         hijriEl.textContent = fullDateText;
@@ -195,7 +192,7 @@ function resetCompanySelection() {
 let selectedTempProduct = null;
 
 // ==========================================
-// 3. محرك البحث التراكمي المطور (عرض أفقي وواسع ومريح للموبايل)
+// 3. محرك البحث التراكمي المطور
 // ==========================================
 function setupLiveSearch() {
     const input = document.getElementById('productSearchInput');
@@ -239,7 +236,6 @@ function setupLiveSearch() {
                 const li = document.createElement('li');
                 li.style.cssText = "padding: 12px 14px; border-bottom: 1px solid #f1f5f9; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: 'Tajawal', sans-serif;";
                 
-                // عرض أفقي منسق وواضح (الاسم والمقاس والسعر ببارز شيك)
                 li.innerHTML = `
                     <span style="font-weight: 800; color: #0f172a; font-size: 15px;">${item.shortName} <span style="color: #0284c7; font-size: 13px; font-weight: 700;">(${item.size})</span></span>
                     <span style="font-weight: bold; color: #0284c7; background: #e0f2fe; padding: 4px 10px; border-radius: 8px; font-size: 13px; white-space: nowrap;">${item.price} ج</span>
@@ -276,7 +272,7 @@ function setupLiveSearch() {
 }
 
 // ==========================================
-// 4. إدارة الفاتورة والإضافة (كروت نظيفة وبدون تفاصيل معقدة)
+// 4. إدارة الفاتورة والإضافة
 // ==========================================
 function selectProductToRow(item) {
     selectedTempProduct = item;
@@ -316,7 +312,6 @@ function addSelectedItemToBill() {
         itemCard.className = 'product-item';
         itemCard.id = `card_${item.id}`;
         
-        // كارت نظيف بدون تفاصيل تنظيمية طويلة ومزعجة
         itemCard.innerHTML = `
             <div class="product-details" style="flex: 1;">
                 <div class="product-name" style="font-weight: 800; color: #0f172a; font-size: 15px;">${item.shortName}</div>
