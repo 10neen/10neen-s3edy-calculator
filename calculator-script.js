@@ -1,17 +1,15 @@
 /**
- * حاسبة معرض الصعيدي الماركة المسجلة v3.3 (مُحدثة بمحرك البحث التراكمي الشامل)
- * دعم الإدخال السريع، التنقل بـ Enter، الفهرسة التلقائية لكيسيل وسمارت، وتحويل الدرجات والمقاسات
+ * حاسبة معرض الصعيدي - لستة أسعار إيجيك v3.5
+ * قائمة منسدلة فورية أسفل خانة البحث مع تحجيم تدريجي واختيار مرن وإرسال الفاتورة عبر واتساب
  */
 
-let activeCompanyKey = 'egic'; 
-let currentCompanyProducts = []; 
-window.currentWhatsappMsg = ""; 
+let allProducts = [];
+let filteredProducts = [];
+let activeCategory = 'ALL';
+let selectedTempProduct = null;
+window.currentWhatsappMsg = "";
 
-// ==========================================
-// 1. قاموس المصطلحات والمقاسات والزوايا البديلة (SYNONYMS)
-// ==========================================
 const SYNONYMS = {
-    // المقاسات والتكافؤ (بوصة ↔ مم)
     "1/2": "20 مم 20mm",
     "20": "20 مم 1/2",
     "3/4": "25 مم 25mm",
@@ -20,8 +18,6 @@ const SYNONYMS = {
     "1 بوصة": "32 مم 32mm",
     "32": "32 مم 1 بوصه 1 بوصة",
     "1.5": "50 مم 50mm",
-    "1.5 بوصه": "50 مم 50mm",
-    "1.5 بوصة": "50 مم 50mm",
     "50": "50 مم 1.5",
     "2 بوصه": "63 مم 63mm",
     "2 بوصة": "63 مم 63mm",
@@ -35,26 +31,17 @@ const SYNONYMS = {
     "6 بوصه": "160 مم 160mm",
     "6 بوصة": "160 مم 160mm",
     "160": "160 مم 6 بوصه 6 بوصة",
-
-    // المصطلحات الفنية والتجارية
     "تي": "مشترك",
     "تيه": "مشترك",
     "مشترك": "تي تيه",
-    "بيبة واطية": "بيبة 7 سم واطيه واطية",
-    "بيبه واطيه": "بيبة 7 سم واطيه واطية",
     "واطية": "7 سم واطيه",
-    "واطيه": "7 سم واطية",
-    "بيبه": "بيبة",
-    "جرجوري": "جرجوري مطر",
+    "واطيه": "7 سم واطيه",
     "بوش": "مسلوب",
-
-    // درجات الزوايا الشائعة في الصرف (كيسيل وسمارت)
     "87": "87 درجة 87درجة 87.5",
     "87.5": "87 درجة 87درجة 87",
     "45": "45 درجة 45درجة"
 };
 
-// دالة تنظيف وتوحيد النصوص لضمان مطابقة التنوين وكلمة "درجة" والهاء والتاء
 function normalizeText(text) {
     if (!text) return "";
     return text
@@ -62,382 +49,461 @@ function normalizeText(text) {
         .replace(/[أإآ]/g, 'ا')
         .replace(/ة/g, 'ه')
         .replace(/ى/g, 'ي')
-        .replace(/درجة|درجه/g, '') // إزالة كلمة درجة للتساوي التلقائي مع الأرقام
-        .replace(/[\u064B-\u0652]/g, '') // إزالة التشكيل
+        .replace(/درجة|درجه/g, '')
+        .replace(/[\u064B-\u0652]/g, '')
         .trim();
 }
 
-// تحديث الوقت والتاريخ بشكل احترافي ومنسق
+function formatPrice(num) {
+    const n = Number(num) || 0;
+    return Number.isInteger(n) ? n.toLocaleString('en-US') : n.toFixed(2).replace(/\.00$/, '');
+}
+
 function updateClock() {
     const now = new Date();
-    
-    // اسم اليوم (مثال: الإثنين)
-    const optionsDay = { weekday: 'long' };
-    const dayName = now.toLocaleDateString('ar-EG', optionsDay);
-    
-    // التاريخ الميلادي (مثال: 7/9/2026)
+    const dayName = now.toLocaleDateString('ar-EG', { weekday: 'long' });
     const gregorian = now.toLocaleDateString('ar-EG', { year: 'numeric', month: 'numeric', day: 'numeric' });
-    
-    // التاريخ الهجري
     const hijri = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
-        day: 'numeric', 
-        month: 'long', 
+        day: 'numeric',
+        month: 'long',
         year: 'numeric'
     }).format(now);
-    
-    // الوقت
-    const timeString = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const timeString = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
 
-    const fullDateText = `📅 اليوم: ${dayName} | 📆 ميلادي: ${gregorian} | 🌙 هجري: ${hijri} هـ`;
-    
     const timeEl = document.getElementById('arabicTime');
-    if(timeEl) {
-        timeEl.innerHTML = `⏰ ${timeString}`;
-    }
-    
     const hijriEl = document.getElementById('hijriDate');
-    if(hijriEl) {
-        hijriEl.textContent = fullDateText;
-    }
+    if (timeEl) timeEl.textContent = `⏰ ${timeString}`;
+    if (hijriEl) hijriEl.textContent = `${dayName} • ${gregorian}م • ${hijri} هـ`;
 }
 
-setInterval(updateClock, 1000);
-updateClock();
+function loadEgicCatalog() {
+    allProducts = [];
+    const categoriesSet = new Set();
 
-const brandDisplayNames = {
-    "BR": "إيجيك BR (تغذية بولي)",
-    "SMART": "سمارت (صرف أبيض)",
-    "KESSEL": "كيسيل (صرف رمادي)"
-};
+    if (typeof productData !== 'undefined' && productData.egic && productData.egic.BR) {
+        const brSections = productData.egic.BR;
+        Object.keys(brSections).forEach((sectionKey) => {
+            const items = brSections[sectionKey];
+            if (Array.isArray(items) && items.length > 0) {
+                categoriesSet.add(sectionKey);
+                items.forEach((item, idx) => {
+                    const cleanName = String(item.name || '').trim().replace(/\s+/g, ' ');
+                    const priceVal = parseFloat(item.price) || 0;
+                    const extraKeywords = cleanName.includes("مشترك") ? " تي تيه " : "";
+                    const id = `egic_${sectionKey}_${idx}`.replace(/[^a-zA-Z0-9\u0600-\u06FF_]/g, '_');
 
-// ==========================================
-// 2. دالة بناء وإعداد بيانات الشركات (معالجة كيسيل وسمارت بذكاء)
-// ==========================================
-function selectCompany(co, el) {
-    activeCompanyKey = 'egic';
-    
-    const brandsSec = document.getElementById('brandsSection');
-    const searchSec = document.getElementById('searchSection');
-    if (brandsSec) brandsSec.style.display = 'none';
-    if (searchSec) searchSec.style.display = 'block';
-
-    if (document.getElementById('subSectionsContainer')) document.getElementById('subSectionsContainer').style.display = 'none';
-    if (document.getElementById('sizesContainer')) document.getElementById('sizesContainer').style.display = 'none';
-    document.getElementById('itemsContainer').innerHTML = '';
-
-    const titleEl = document.getElementById('selectedCompanyTitle');
-    if (titleEl) {
-        titleEl.textContent = `تسعير منتجات: المصرية الألمانية (إيجيك / سمارت / كيسيل)`;
-    }
-
-    currentCompanyProducts = [];
-    const cKey = 'egic';
-
-    if (typeof productData !== 'undefined' && productData[cKey]) {
-        Object.keys(productData[cKey]).forEach(subKey => {
-            const brandReadable = brandDisplayNames[subKey] || subKey;
-            
-            Object.keys(productData[cKey][subKey]).forEach(categoryOrSize => {
-                const items = productData[cKey][subKey][categoryOrSize];
-                
-                if (Array.isArray(items)) {
-                    items.forEach(item => {
-                        const fullNameRaw = `${item.name} ${brandReadable}`;
-                        
-                        let extraKeywords = "";
-                        if (item.name.includes("مشترك") || categoryOrSize.includes("مشترك")) {
-                            extraKeywords += " تي تيه ";
-                        }
-                        if (brandReadable.includes("كيسيل") || subKey.toUpperCase() === "KESSEL") {
-                            extraKeywords += " كيسيل kessel صرف رمادي ";
-                        }
-                        if (brandReadable.includes("سمارت") || subKey.toUpperCase() === "SMART") {
-                            extraKeywords += " سمارت smart صرف ابيض ";
-                        }
-
-                        const searchIndex = `${item.name} ${categoryOrSize} ${brandReadable} ${extraKeywords}`;
-
-                        currentCompanyProducts.push({
-                            id: `${cKey}_${subKey}_${item.name}`.replace(/[^a-zA-Z0-9]/g, '_'),
-                            fullName: fullNameRaw,
-                            shortName: item.name,
-                            size: categoryOrSize,
-                            brand: brandReadable,
-                            price: item.price,
-                            searchableText: normalizeText(searchIndex)
-                        });
+                    allProducts.push({
+                        id,
+                        name: cleanName,
+                        category: sectionKey,
+                        price: priceVal,
+                        searchable: normalizeText(`${cleanName} ${sectionKey} ${extraKeywords}`)
                     });
-                }
-            });
-        });
-    }
-
-    const searchInput = document.getElementById('productSearchInput');
-    if (searchInput) {
-        searchInput.value = '';
-        searchInput.focus();
-    }
-}
-
-function resetCompanySelection() {
-    document.getElementById('brandsSection').style.display = 'block';
-    document.getElementById('searchSection').style.display = 'none';
-    document.getElementById('searchResultsDropdown').style.display = 'none';
-    document.getElementById('itemsContainer').innerHTML = '';
-    
-    document.querySelectorAll('.brand-card').forEach(c => c.classList.remove('active'));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-let selectedTempProduct = null;
-
-// ==========================================
-// 3. محرك البحث التراكمي المطور
-// ==========================================
-function setupLiveSearch() {
-    const input = document.getElementById('productSearchInput');
-    const dropdown = document.getElementById('searchResultsDropdown');
-
-    if (!input || !dropdown) return;
-
-    input.addEventListener('input', function () {
-        let rawQuery = this.value.trim();
-        dropdown.innerHTML = '';
-        selectedTempProduct = null;
-
-        if (rawQuery.length === 0) {
-            dropdown.style.display = 'none';
-            return;
-        }
-
-        let normalizedQuery = normalizeText(rawQuery);
-        const searchTokens = normalizedQuery.split(/\s+/).filter(t => t.length > 0);
-
-        let matches = currentCompanyProducts.filter(product => {
-            return searchTokens.every(token => {
-                const synonym = SYNONYMS[token] ? normalizeText(SYNONYMS[token]) : "";
-                return product.searchableText.includes(token) || 
-                      (synonym && product.searchableText.includes(synonym));
-            });
-        });
-
-        const firstToken = searchTokens[0];
-        matches.sort((a, b) => {
-            const aStartsWith = normalizeText(a.shortName).startsWith(firstToken);
-            const bStartsWith = normalizeText(b.shortName).startsWith(firstToken);
-
-            if (aStartsWith && !bStartsWith) return -1;
-            if (!aStartsWith && bStartsWith) return 1;
-            return 0;
-        });
-
-        if (matches.length > 0) {
-            matches.slice(0, 15).forEach((item) => {
-                const li = document.createElement('li');
-                li.style.cssText = "padding: 12px 14px; border-bottom: 1px solid #f1f5f9; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: 'Tajawal', sans-serif;";
-                
-                li.innerHTML = `
-                    <span style="font-weight: 800; color: #0f172a; font-size: 15px;">${item.shortName} <span style="color: #0284c7; font-size: 13px; font-weight: 700;">(${item.size})</span></span>
-                    <span style="font-weight: bold; color: #0284c7; background: #e0f2fe; padding: 4px 10px; border-radius: 8px; font-size: 13px; white-space: nowrap;">${item.price} ج</span>
-                `;
-                
-                li.onclick = () => {
-                    selectProductToRow(item);
-                };
-
-                dropdown.appendChild(li);
-            });
-            dropdown.style.display = 'block';
-        } else {
-            dropdown.innerHTML = `<li style="padding: 12px; text-align: center; color: #94a3b8; font-family: 'Tajawal', sans-serif;">لا يوجد صنف مطابق</li>`;
-            dropdown.style.display = 'block';
-        }
-    });
-
-    input.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            const firstLi = dropdown.querySelector('li');
-            if (firstLi && dropdown.style.display !== 'none') {
-                firstLi.click();
+                });
             }
-        }
-    });
+        });
+    }
 
-    document.addEventListener('click', function (e) {
-        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
-            dropdown.style.display = 'none';
-        }
+    renderCategoryTabs(Array.from(categoriesSet));
+    filterAndRenderDropdown(true);
+}
+
+function getCategoriesFromData() {
+    if (typeof productData !== 'undefined' && productData.egic && productData.egic.BR) {
+        return Object.keys(productData.egic.BR);
+    }
+    return [];
+}
+
+function renderCategoryTabs(categories) {
+    const tabsEl = document.getElementById('categoryTabs');
+    if (!tabsEl) return;
+
+    const allTabs = [{ key: 'ALL', label: 'الكل' }, ...categories.map(c => ({ key: c, label: c }))];
+    tabsEl.innerHTML = '';
+
+    allTabs.forEach((tab) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `cat-tab-btn ${activeCategory === tab.key ? 'active' : ''}`;
+        btn.textContent = tab.label;
+        btn.onclick = () => {
+            activeCategory = tab.key;
+            tabsEl.querySelectorAll('.cat-tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            filterAndRenderDropdown(true);
+        };
+        tabsEl.appendChild(btn);
     });
 }
 
-// ==========================================
-// 4. إدارة الفاتورة والإضافة
-// ==========================================
-function selectProductToRow(item) {
-    selectedTempProduct = item;
-    const input = document.getElementById('productSearchInput');
-    const qtyInput = document.getElementById('quickQtyInput');
+function renderDropdownList(items, shouldShow) {
     const dropdown = document.getElementById('searchResultsDropdown');
+    const searchInput = document.getElementById('productSearchInput');
+    if (!dropdown || !searchInput) return;
 
-    input.value = `${item.shortName} (${item.size})`;
-    dropdown.style.display = 'none';
-    
-    if (qtyInput) {
-        qtyInput.focus();
-        qtyInput.select();
+    dropdown.innerHTML = '';
+
+    if (!shouldShow) {
+        dropdown.style.display = 'none';
+        return;
     }
+
+    if (items.length === 0) {
+        dropdown.innerHTML = `<li class="dropdown-empty">لا يوجد صنف مطابق، جرّب تزويد حروف أو تغيير الكلمة</li>`;
+        dropdown.style.display = 'block';
+        return;
+    }
+
+    // نعرض حتى 30 نتيجة لسهولة التصفح بالنظر أو إكمال الكتابة
+    items.slice(0, 30).forEach((item) => {
+        const li = document.createElement('li');
+        li.className = 'dropdown-option';
+        li.setAttribute('role', 'option');
+        li.innerHTML = `
+            <span class="dropdown-item-title">${item.name}</span>
+            <span class="dropdown-item-price">${formatPrice(item.price)} ج</span>
+        `;
+        li.addEventListener('click', () => {
+            selectedTempProduct = item;
+            searchInput.value = item.name;
+            updateSelectedItemBar(item);
+            dropdown.style.display = 'none';
+        });
+        dropdown.appendChild(li);
+    });
+
+    dropdown.style.display = 'block';
+}
+
+function filterAndRenderDropdown(resetSelection = false, openList = true) {
+    const searchInput = document.getElementById('productSearchInput');
+    const countEl = document.getElementById('matchCountText');
+
+    const rawQuery = searchInput ? searchInput.value.trim() : '';
+    const normalizedQuery = normalizeText(rawQuery);
+    const tokens = normalizedQuery.split(/\s+/).filter(Boolean);
+
+    const categoryItems = allProducts.filter((item) => {
+        return activeCategory === 'ALL' || item.category === activeCategory;
+    });
+
+    if (tokens.length === 0) {
+        filteredProducts = categoryItems;
+        renderDropdownList(filteredProducts, false);
+    } else {
+        filteredProducts = categoryItems.filter((item) => {
+            return tokens.every((token) => {
+                const syn = SYNONYMS[token] ? normalizeText(SYNONYMS[token]) : '';
+                return (
+                    item.searchable.includes(token) ||
+                    (syn && item.searchable.includes(syn))
+                );
+            });
+        });
+
+        const firstToken = tokens[0] || '';
+        filteredProducts.sort((a, b) => {
+            const aStarts = normalizeText(a.name).startsWith(firstToken) ? 0 : 1;
+            const bStarts = normalizeText(b.name).startsWith(firstToken) ? 0 : 1;
+            return aStarts - bStarts;
+        });
+
+        renderDropdownList(filteredProducts, openList);
+    }
+
+    if (countEl) {
+        const catLabel = activeCategory === 'ALL' ? 'كل الأقسام' : activeCategory;
+        if (tokens.length > 0) {
+            countEl.textContent = `${catLabel} • المطابق لـ "${rawQuery}": ${filteredProducts.length} صنف (اختر من القائمة أو كمّل كتابة)`;
+        } else {
+            countEl.textContent = `${catLabel} • إجمالي البنود: ${filteredProducts.length} صنف (ابدأ بالكتابة لفتح القائمة)`;
+        }
+    }
+
+    if (resetSelection) {
+        selectedTempProduct = null;
+        updateSelectedItemBar(null);
+    }
+}
+
+function updateSelectedItemBar(item) {
+    const bar = document.getElementById('selectedItemPriceBar');
+    const nameEl = document.getElementById('selectedItemName');
+    const priceEl = document.getElementById('selectedItemPrice');
+    if (!bar || !nameEl || !priceEl) return;
+
+    if (!item) {
+        bar.style.display = 'none';
+        nameEl.textContent = '';
+        priceEl.textContent = '';
+        return;
+    }
+
+    bar.style.display = 'flex';
+    nameEl.textContent = item.name;
+    priceEl.textContent = `${formatPrice(item.price)} ج.م`;
+}
+
+function stepQuickQty(delta) {
+    const qtyInput = document.getElementById('quickQtyInput');
+    if (!qtyInput) return;
+    const current = parseFloat(qtyInput.value) || 1;
+    const next = Math.max(0.5, current + delta);
+    qtyInput.value = next;
 }
 
 function addSelectedItemToBill() {
-    const input = document.getElementById('productSearchInput');
+    const searchInput = document.getElementById('productSearchInput');
     const qtyInput = document.getElementById('quickQtyInput');
-    const qtyVal = parseFloat(qtyInput ? qtyInput.value : 1) || 1;
+    const qtyVal = parseFloat(qtyInput ? qtyInput.value : 1);
+
+    // لو العميل كتب اسم صنف مطابق تماماً ولم يضغط على القائمة، نلتقطه تلقائياً
+    if (!selectedTempProduct && searchInput && searchInput.value.trim()) {
+        const normVal = normalizeText(searchInput.value.trim());
+        const exactMatch = filteredProducts.find(p => normalizeText(p.name) === normVal);
+        if (exactMatch) {
+            selectedTempProduct = exactMatch;
+        }
+    }
 
     if (!selectedTempProduct) {
-        alert("يرجى اختيار صنف من القائمة أولاً يا هندسة!");
-        input.focus();
+        alert("من فضلك اكتب للبحث واختر الصنف من القائمة أولاً.");
+        if (searchInput) searchInput.focus();
+        return;
+    }
+
+    if (!qtyVal || qtyVal <= 0) {
+        alert("من فضلك حدد كمية صحيحة أكبر من الصفر.");
+        if (qtyInput) qtyInput.focus();
         return;
     }
 
     const item = selectedTempProduct;
     const container = document.getElementById('itemsContainer');
+    const emptyNotice = document.getElementById('emptyBillNotice');
+    if (emptyNotice) emptyNotice.remove();
+
     const existingQtyInput = document.getElementById(`qty_${item.id}`);
 
     if (existingQtyInput) {
         const currentQty = parseFloat(existingQtyInput.value) || 0;
         existingQtyInput.value = currentQty + qtyVal;
+        existingQtyInput.dispatchEvent(new Event('input'));
     } else {
-        const itemCard = document.createElement('div');
-        itemCard.className = 'product-item';
-        itemCard.id = `card_${item.id}`;
-        
-        itemCard.innerHTML = `
-            <div class="product-details" style="flex: 1;">
-                <div class="product-name" style="font-weight: 800; color: #0f172a; font-size: 15px;">${item.shortName}</div>
-                <div style="font-size: 13px; color: #0284c7; font-weight: 700; margin-top: 2px;">المقاس: ${item.size}</div>
+        const card = document.createElement('div');
+        card.className = 'product-item';
+        card.id = `card_${item.id}`;
+
+        card.innerHTML = `
+            <div class="product-details">
+                <div class="product-name">${item.name}</div>
+                <div class="product-meta">${item.category} • سعر الوحدة: ${formatPrice(item.price)} ج</div>
             </div>
-            
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span class="product-price-tag" style="font-weight: bold; color: #0f172a; font-size: 14px;">${item.price} ج</span>
-                <input type="number" 
-                       id="qty_${item.id}"
-                       class="qty-input"
-                       data-name="${item.shortName} (${item.size})" 
-                       data-price="${item.price}" 
-                       value="${qtyVal}"
-                       min="1"
-                       style="width: 60px; text-align: center; padding: 8px; border: 1px solid #cbd5e1; border-radius: 8px; font-weight: bold;"
-                       oninput="updateLiveTotal()"
-                       onkeydown="handleQtyEnter(event)">
-                <button onclick="removeItemCard('card_${item.id}')" style="background: none; border: none; color: #ef4444; font-size: 18px; cursor: pointer; padding: 4px;">✕</button>
+            <div class="product-controls">
+                <button type="button" class="mini-step-btn" onclick="changeCardQty('${item.id}', -1)" aria-label="تقليل الكمية">−</button>
+                <input
+                    type="number"
+                    id="qty_${item.id}"
+                    class="qty-input"
+                    data-name="${item.name}"
+                    data-price="${item.price}"
+                    value="${qtyVal}"
+                    min="0.5"
+                    step="any"
+                    oninput="updateLiveTotal()"
+                >
+                <button type="button" class="mini-step-btn" onclick="changeCardQty('${item.id}', 1)" aria-label="زيادة الكمية">+</button>
+                <button type="button" class="remove-item-btn" onclick="removeItemCard('card_${item.id}')" aria-label="حذف الصنف">✕</button>
             </div>
         `;
-        container.prepend(itemCard);
+        container.prepend(card);
     }
 
     updateLiveTotal();
-    selectedTempProduct = null;
-    input.value = '';
+
     if (qtyInput) qtyInput.value = '1';
-    input.focus();
+    selectedTempProduct = null;
+    if (searchInput) {
+        searchInput.value = '';
+    }
+    updateSelectedItemBar(null);
+    renderDropdownList([], false);
 }
 
-function handleQtyEnter(event) {
-    if (event.key === 'Enter') {
-        event.preventDefault();
-        const searchInput = document.getElementById('productSearchInput');
-        if (searchInput) {
-            searchInput.focus();
-            searchInput.value = '';
-            window.scrollTo({ top: searchInput.offsetTop - 20, behavior: 'smooth' });
-        }
+function changeCardQty(itemId, delta) {
+    const input = document.getElementById(`qty_${itemId}`);
+    if (!input) return;
+    const current = parseFloat(input.value) || 0;
+    const next = current + delta;
+    if (next <= 0) {
+        removeItemCard(`card_${itemId}`);
+    } else {
+        input.value = next;
+        updateLiveTotal();
     }
 }
 
 function removeItemCard(cardId) {
     const card = document.getElementById(cardId);
-    if (card) {
-        card.remove();
-        updateLiveTotal();
+    if (card) card.remove();
+
+    const container = document.getElementById('itemsContainer');
+    if (container && container.querySelectorAll('.product-item').length === 0) {
+        container.innerHTML = `
+            <div id="emptyBillNotice" class="empty-bill-notice">
+                لم يتم إضافة أصناف بعد. اختَر القسم وابحث أو اختَر الصنف من القائمة وحدد الكمية لإملاء الفاتورة.
+            </div>
+        `;
     }
+    updateLiveTotal();
 }
 
 function updateLiveTotal() {
     let total = 0;
-    document.querySelectorAll('[id^="qty_"]').forEach(i => {
-        const val = parseFloat(i.value);
-        if(!isNaN(val) && val > 0) {
-            total += (val * parseFloat(i.dataset.price));
+    let itemsCount = 0;
+
+    document.querySelectorAll('[id^="qty_"]').forEach((input) => {
+        const q = parseFloat(input.value);
+        const price = parseFloat(input.dataset.price);
+        if (!isNaN(q) && q > 0 && !isNaN(price)) {
+            total += q * price;
+            itemsCount += 1;
         }
     });
+
     const totalEl = document.getElementById('totalResult');
-    if (totalEl) totalEl.innerText = total.toLocaleString('en-US');
+    const countPill = document.getElementById('billItemsCount');
+    if (totalEl) totalEl.textContent = formatPrice(total);
+    if (countPill) countPill.textContent = `${itemsCount} ${itemsCount === 1 ? 'بند' : 'بنود'}`;
 }
 
 function calculateTotal() {
     let total = 0;
     let itemsHtml = "";
-    let whatsappMsg = "📝 *فاتورة معرض الصعيدي (منتجات إيجيك)*\n";
+    let whatsappMsg = "📝 *فاتورة معرض الصعيدي (لستة أسعار إيجيك)*\n";
     whatsappMsg += "━━━━━━━━━━━━━━━\n";
 
     const inputs = document.querySelectorAll('[id^="qty_"]');
     let hasItems = false;
 
-    inputs.forEach(i => {
-        const q = parseFloat(i.value);
-        if(q > 0) {
+    inputs.forEach((input) => {
+        const q = parseFloat(input.value);
+        if (!isNaN(q) && q > 0) {
             hasItems = true;
-            const price = parseFloat(i.dataset.price);
+            const price = parseFloat(input.dataset.price);
             const sub = q * price;
             total += sub;
+            const name = input.dataset.name;
 
             itemsHtml += `
-                <div style="display:flex; justify-content:space-between; margin-bottom:8px; border-bottom:1px solid #eee; padding-bottom:5px; font-size:14px;">
-                    <span>${i.dataset.name} <br> <small>(عدد ${q} × ${price})</small></span>
-                    <b style="color:#0052cc;">${sub.toLocaleString()} ج</b>
-                </div>`;
+                <div class="preview-row">
+                    <div>
+                        <div class="preview-item-name">${name}</div>
+                        <div class="preview-item-calc">الكمية: ${q} × ${formatPrice(price)} ج</div>
+                    </div>
+                    <strong class="preview-item-sub">${formatPrice(sub)} ج</strong>
+                </div>
+            `;
 
-            whatsappMsg += `🔹 *${i.dataset.name}*\n   الكمية: ${q} × ${price} = *${sub.toLocaleString()} ج.م*\n`;
+            whatsappMsg += `• *${name}*\n  الكمية: ${q} × ${formatPrice(price)} = *${formatPrice(sub)} ج.م*\n`;
         }
     });
 
-    if(!hasItems) return alert("يا هندسة، اختار أصناف ودخل الكميات الأول!");
+    if (!hasItems) {
+        alert("أضف صنفاً واحداً على الأقل في الفاتورة أولاً.");
+        return;
+    }
 
-    document.getElementById('previewContent').innerHTML = itemsHtml + 
-        `<div style="text-align:center; font-size:20px; font-weight:bold; color:#0f172a; margin-top:15px; border-top:2px solid #0052cc; padding-top:10px;">
-            الإجمالي النهائي: ${total.toLocaleString()} ج.م
-        </div>`;
-    
+    document.getElementById('previewContent').innerHTML = itemsHtml + `
+        <div class="preview-total-box">
+            الإجمالي التقديري: ${formatPrice(total)} ج.م
+        </div>
+    `;
+
+    window.currentWhatsappMsg = whatsappMsg + "━━━━━━━━━━━━━━━\n" + `💰 *الإجمالي التقديري: ${formatPrice(total)} ج.م*`;
     document.getElementById('previewModal').style.display = 'flex';
-    window.currentWhatsappMsg = whatsappMsg + "━━━━━━━━━━━━━━━\n" + `💰 *الإجمالي النهائي: ${total.toLocaleString()} جنيه*`;
 }
 
 function sendToWhatsApp() {
-    const phone = "201122019099"; 
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(window.currentWhatsappMsg)}`);
+    const phone = "201122019099";
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(window.currentWhatsappMsg)}`, '_blank', 'noopener,noreferrer');
 }
 
-function closePreview() { 
-    document.getElementById('previewModal').style.display = 'none'; 
+function closePreview() {
+    const modal = document.getElementById('previewModal');
+    if (modal) modal.style.display = 'none';
 }
 
-function startNewOrder() { 
-    if(confirm("هل تريد مسح البيانات وبدء طلب جديد؟")) {
-        document.getElementById('itemsContainer').innerHTML = '';
-        if (document.getElementById('totalResult')) document.getElementById('totalResult').innerText = '0';
-        
-        const searchInput = document.getElementById('productSearchInput');
-        if (searchInput) {
-            searchInput.value = '';
-            searchInput.focus();
+function startNewOrder() {
+    const hasItems = document.querySelectorAll('[id^="qty_"]').length > 0;
+    if (!hasItems || confirm("هل تريد مسح الفاتورة الحالية وبدء فاتورة جديدة؟")) {
+        const container = document.getElementById('itemsContainer');
+        if (container) {
+            container.innerHTML = `
+                <div id="emptyBillNotice" class="empty-bill-notice">
+                    لم يتم إضافة أصناف بعد. اختَر القسم وابحث أو اختَر الصنف من القائمة وحدد الكمية لإملاء الفاتورة.
+                </div>
+            `;
         }
-        window.scrollTo({top: 0, behavior: 'smooth'});
+        const searchInput = document.getElementById('productSearchInput');
+        if (searchInput) searchInput.value = '';
+        const qtyInput = document.getElementById('quickQtyInput');
+        if (qtyInput) qtyInput.value = '1';
+
+        activeCategory = 'ALL';
+        renderCategoryTabs(getCategoriesFromData());
+        filterAndRenderDropdown(true, false);
+        updateLiveTotal();
     }
 }
 
-window.onload = () => { 
-    updateClock(); 
-    setupLiveSearch();
-    selectCompany('egic');
-};
+function bindControls() {
+    const searchInput = document.getElementById('productSearchInput');
+    const clearBtn = document.getElementById('clearSearchBtn');
+    const dropdown = document.getElementById('searchResultsDropdown');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            selectedTempProduct = null;
+            updateSelectedItemBar(null);
+            filterAndRenderDropdown(false, true);
+        });
+
+        searchInput.addEventListener('focus', () => {
+            if (searchInput.value.trim().length > 0) {
+                filterAndRenderDropdown(false, true);
+            }
+        });
+    }
+
+    if (clearBtn && searchInput) {
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            selectedTempProduct = null;
+            updateSelectedItemBar(null);
+            renderDropdownList([], false);
+            filterAndRenderDropdown(false, false);
+            searchInput.focus();
+        });
+    }
+
+    document.addEventListener('click', (e) => {
+        if (
+            dropdown &&
+            searchInput &&
+            !searchInput.contains(e.target) &&
+            !dropdown.contains(e.target)
+        ) {
+            dropdown.style.display = 'none';
+        }
+    });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    updateClock();
+    setInterval(updateClock, 60000);
+    bindControls();
+    loadEgicCatalog();
+    updateLiveTotal();
+});
